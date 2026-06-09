@@ -2013,7 +2013,7 @@ namespace Cheat
 				if (!modBase || !modSize) continue;
 
 				const size_t blockSize = 0x10000;
-				std::vector<uint8_t> buf(blockSize);
+				std::vector<uint8_t> buf(blockSize + 8);
 
 				for (uintptr_t addr = modBase; addr < modBase + modSize - 16; addr += blockSize)
 				{
@@ -2023,7 +2023,7 @@ namespace Cheat
 						continue;
 					if (got < 16) continue;
 
-					for (size_t i = 0; i <= got - 16; i += 8)
+					for (size_t i = 0; i <= got - 16; i++)
 					{
 						uint64_t val = *(uint64_t*)(buf.data() + i);
 						if (val == hash)
@@ -2053,9 +2053,10 @@ namespace Cheat
 	{
 		if (m_AnimReady) return;
 
-		uint64_t taskPlayAnimAddr = FindNativeAddress(0x811D6DFF0E2B7A9B);
+		// Try multiple known hashes for TASK_PLAY_ANIM
+		uint64_t taskPlayAnimAddr = FindNativeAddress(0xEAF6B1E6C1B8F3D9);
 		if (!taskPlayAnimAddr)
-			taskPlayAnimAddr = FindNativeAddress(0xEAF6B1E6C1B8F3D9);
+			taskPlayAnimAddr = FindNativeAddress(0x811D6DFF0E2B7A9B);
 		if (!taskPlayAnimAddr) return;
 
 		m_AnimFuncAddr = taskPlayAnimAddr;
@@ -2081,72 +2082,75 @@ namespace Cheat
 
 		m_AnimParamsAddr = params;
 
-		// Shellcode: __fastcall, RCX = params base
+		// Shellcode (MS x64 __fastcall calling convention):
+		// RCX = params base (passed by CreateRemoteThread)
+		// Params layout in our struct:
+		//   +0x00: ped ptr (8)
+		//   +0x08: animDict str ptr (8)
+		//   +0x10: animName str ptr (8)
+		//   +0x18: speed (8 bytes, float in lower 4)
+		//   +0x20: speedMul (8)
+		//   +0x28: duration (8)
+		//   +0x30: flag (8)
+		//   +0x38: playbackRate (8)
+		//   +0x40: lockX (8)
+		//   +0x48: lockY (8)
+		//   +0x50: lockZ (8)
+		//   +0x58: animDict string
+		//   +0x80: animName string
 		std::vector<uint8_t> sc;
 
-		// push rbx, rbp
-		sc.push_back(0x53); sc.push_back(0x55);
-		// mov rbp, rsp
-		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xE5);
-		// sub rsp, 0x30 (shadow space)
-		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xEC); sc.push_back(0x30);
+		// save non-volatile regs
+		sc.push_back(0x53);                           // push rbx
+		sc.push_back(0x55);                           // push rbp
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xE5); // mov rbp, rsp
 
-		// mov rbx, rcx (params base)
-		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xCB);
+		// allocate shadow space (32) + 7 stack params (56) + alignment (8) = 0x60
+		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xEC); sc.push_back(0x60);
 
-		// mov rcx, [rbx+0x00] — ped
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x4B); sc.push_back(0x00);
-		// mov rdx, [rbx+0x08] — animDict ptr
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x53); sc.push_back(0x08);
-		// mov r8, [rbx+0x10] — animName ptr
-		sc.push_back(0x4C); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x10);
-		// movss xmm3, [rbx+0x18] — speed (float)
-		sc.push_back(0xF3); sc.push_back(0x0F); sc.push_back(0x10); sc.push_back(0x5B); sc.push_back(0x18);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xCB); // mov rbx, rcx
 
-		// Push stack params (right-to-left):
-		// loads 32-bit values and pushes as 64-bit (sign-extended for ints, bit-pattern for floats)
-		// lockZ [rbx+0x50]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x50);
-		sc.push_back(0x50);
-		// lockY [rbx+0x48]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x48);
-		sc.push_back(0x50);
-		// lockX [rbx+0x40]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x40);
-		sc.push_back(0x50);
-		// playbackRate [rbx+0x38]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x38);
-		sc.push_back(0x50);
-		// flag [rbx+0x30]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x30);
-		sc.push_back(0x50);
-		// duration [rbx+0x28]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x28);
-		sc.push_back(0x50);
-		// speedMul [rbx+0x20]
+		// reg params
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x4B); sc.push_back(0x00); // mov rcx, [rbx]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x53); sc.push_back(0x08); // mov rdx, [rbx+8]
+		sc.push_back(0x4C); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x10); // mov r8,  [rbx+0x10]
+		sc.push_back(0xF3); sc.push_back(0x0F); sc.push_back(0x10); sc.push_back(0x5B); sc.push_back(0x18); // movss xmm3, [rbx+0x18]
+
+		// stack params — write to shadow+0x20 .. shadow+0x50
+		// speedMul at [rsp+0x20]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x20);
-		sc.push_back(0x50);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x20);
+		// duration at [rsp+0x28]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x28);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x28);
+		// flag at [rsp+0x30]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x30);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x30);
+		// playbackRate at [rsp+0x38]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x38);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x38);
+		// lockX at [rsp+0x40]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x40);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x40);
+		// lockY at [rsp+0x48]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x48);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x48);
+		// lockZ at [rsp+0x50]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x50);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x50);
 
-		// mov rax, m_AnimFuncAddr (embedded as 8 bytes)
+		// mov rax, <function address>
 		sc.push_back(0x48); sc.push_back(0xB8);
 		for (int i = 0; i < 8; i++)
 			sc.push_back((uint8_t)(m_AnimFuncAddr >> (i * 8)));
 
-		// sub rsp, 8 (align to 16 bytes — 7 pushes = 56, already did sub 0x30 = 48, total 104 = not 16-aligned)
-		// 48 + 56 = 104 = 0x68. 0x68 mod 16 = 8. Need 8 more.
-		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xEC); sc.push_back(0x08);
+		sc.push_back(0xFF); sc.push_back(0xD0);       // call rax
 
-		// call rax
-		sc.push_back(0xFF); sc.push_back(0xD0);
+		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xC4); sc.push_back(0x60); // add rsp, 0x60
 
-		// Restore stack: add rsp, 0x30 + 56 + 8 = 0x68 + 8 = 0x70
-		// Actually we added: 0x30 (sub) + 56 (7 pushes * 8) + 8 (alignment) = 0x70
-		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xC4); sc.push_back(0x70);
-
-		// pop rbp, rbx
-		sc.push_back(0x5D); sc.push_back(0x5B);
-		// ret
-		sc.push_back(0xC3);
+		sc.push_back(0x5D);                           // pop rbp
+		sc.push_back(0x5B);                           // pop rbx
+		sc.push_back(0xC3);                           // ret
 
 		uint64_t cave = FrameWork::Memory::CreateCodeCave(sc.size());
 		if (!cave || !FrameWork::Memory::WriteBytes(cave, sc))
@@ -2211,57 +2215,3 @@ namespace Cheat
 			CloseHandle(hThread);
 		}
 	}
-
-		m_AnimShellcodeAddr = cave;
-		m_AnimReady = true;
-	}
-
-	void FivemSDK::TriggerMeleeAnim(CPed* ped)
-	{
-		if (!m_AnimReady || !ped) return;
-
-		uint64_t params = m_AnimParamsAddr;
-		uint64_t dictStrOff = params + 0x38;
-		uint64_t nameStrOff = params + 0x60;
-
-		static const char animDict[] = "melee@unarmed@streamed_core";
-		static const char animName[] = "action_bat";
-
-		// Write strings
-		FrameWork::Memory::WriteProcessMemoryImpl(dictStrOff, (LPVOID)animDict, sizeof(animDict));
-		FrameWork::Memory::WriteProcessMemoryImpl(nameStrOff, (LPVOID)animName, sizeof(animName));
-
-		// Write params
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x00, &ped, 8);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x08, &dictStrOff, 8);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x10, &nameStrOff, 8);
-
-		float speed = 8.0f;
-		float speedMul = -8.0f;
-		int32_t duration = -1;
-		int32_t flag = 49;
-		float playbackRate = 0.0f;
-		int32_t lockX = 0, lockY = 0, lockZ = 0;
-
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x18, &speed, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x1C, &speedMul, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x20, &duration, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x24, &flag, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x28, &playbackRate, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x2C, &lockX, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x30, &lockY, 4);
-		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x34, &lockZ, 4);
-
-		HANDLE hThread = CreateRemoteThread(
-			ProcHandle, NULL, 0,
-			(LPTHREAD_START_ROUTINE)m_AnimShellcodeAddr,
-			(LPVOID)params, 0, NULL
-		);
-
-		if (hThread)
-		{
-			WaitForSingleObject(hThread, 5000);
-			CloseHandle(hThread);
-		}
-	}
-}
