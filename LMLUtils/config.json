@@ -820,6 +820,21 @@
         "value": true
     },
     {
+        "name": "General.ParticleOpacity",
+        "type": "int",
+        "value": 50
+    },
+    {
+        "name": "General.Plexus",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "General.PlexusOpacity",
+        "type": "int",
+        "value": 50
+    },
+    {
         "name": "General.ThreadDelay",
         "type": "int",
         "value": 1
