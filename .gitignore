@@ -1,0 +1,15 @@
+.vs/
+x64/
+*.user
+*.suo
+*.db
+*.opendb
+*.ipch
+*.pdb
+*.obj
+*.tlog
+*.log
+*.recipe
+*.iobj
+*.ipdb
+*.exe

@@ -1,0 +1,53 @@
+ImGui::PushFont(InterRegular);
+{
+    bool pressed = ImGui::Button(T("Copy Clothes"), ImVec2(-1, 30));
+    Custom::AnimateLastItemButton();
+    if (pressed)
+    {
+        if (SeletedIndex < 0 || SeletedIndex >= Core::SDK::Game::EntityList.size())
+            return;
+
+        auto& SelectedPed = Core::SDK::Game::EntityList[SeletedIndex];
+
+        if (!SelectedPed.Ped) return;
+
+        uintptr_t pedAddress = reinterpret_cast<uintptr_t>(SelectedPed.Ped);
+        uint64_t drawhandler = Mem.Read<uint64_t>(pedAddress + 0x48);
+
+        uint64_t shoes = Mem.Read<uint64_t>(drawhandler + 0xF0);
+        int shoes_tex = Mem.Read<int>(drawhandler + 0xF0 + 0x8);
+
+        uint64_t leg = Mem.Read<uint64_t>(drawhandler + 0xF8);
+        int leg_tex = Mem.Read<int>(drawhandler + 0xF8 + 0x8);
+
+        uint64_t body = Mem.Read<uint64_t>(drawhandler + 0x100);
+        int body_tex = Mem.Read<int>(drawhandler + 0x100 + 0x8);
+
+        uint64_t tshirt = Mem.Read<uint64_t>(drawhandler + 0x108);
+        int tshirt_tex = Mem.Read<int>(drawhandler + 0x108 + 0x8);
+
+        uint64_t mask = Mem.Read<uint64_t>(drawhandler + 0x110);
+        int mask_tex = Mem.Read<int>(drawhandler + 0x110 + 0x8);
+
+        uintptr_t localPlayerAddr = reinterpret_cast<uintptr_t>(Core::SDK::Pointers::pLocalPlayer);
+        uint64_t local_drawhandler = Mem.Read<uint64_t>(localPlayerAddr + 0x48);
+
+        Mem.Write<uint64_t>(local_drawhandler + 0xF0, shoes);
+        Mem.Write<int>(local_drawhandler + 0xF0 + 0x8, shoes_tex);
+
+        Mem.Write<uint64_t>(local_drawhandler + 0xF8, leg);
+        Mem.Write<int>(local_drawhandler + 0xF8 + 0x8, leg_tex);
+
+        Mem.Write<uint64_t>(local_drawhandler + 0x100, body);
+        Mem.Write<int>(local_drawhandler + 0x100 + 0x8, body_tex);
+
+        Mem.Write<uint64_t>(local_drawhandler + 0x108, tshirt);
+        Mem.Write<int>(local_drawhandler + 0x108 + 0x8, tshirt_tex);
+
+        Mem.Write<uint64_t>(local_drawhandler + 0x110, mask);
+        Mem.Write<int>(local_drawhandler + 0x110 + 0x8, mask_tex);
+
+        Mem.Write<uint64_t>(localPlayerAddr + 0xAC, 1);
+    }
+}
+ImGui::PopFont();

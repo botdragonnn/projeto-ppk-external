@@ -1,0 +1,140 @@
+# CODIGO DE PULL VEHICLE (FIVEM EXTERNAL)
+
+Este arquivo contém o código completo para implementar a funcionalidade de "Pull Vehicle" (Puxar Veículo), incluindo as dependências do SDK, a lógica principal de exploits e a integração com a interface ImGui.
+
+---
+
+## 1. Dependências do SDK (FivemSDK.cpp)
+
+Estas funções são responsáveis por manipular a memória bruta do jogo e solicitar controle de rede.
+
+```cpp
+// Teletransporta um objeto manipulando a memória (Navegação e Posição Visual)
+void FivemSDK::TeleportToObject(uintptr_t Object, uintptr_t Navigation, uintptr_t ModelInfo, Vector3D Position, Vector3D VisualPosition, bool Stop)
+{
+    float BackupMagic = 0.f;
+    if (Stop)
+    {
+        // 0x2C no ModelInfo controla a colisão (setar para 0 remove colisões temporariamente)
+        BackupMagic = FrameWork::Memory::ReadMemory<float>(ModelInfo + 0x2C);
+        FrameWork::Memory::WriteMemory(ModelInfo + 0x2C, 0.f);
+    }
+
+    // Escreve a nova posição na memória do objeto (Visual) e da navegação (Física)
+    FrameWork::Memory::WriteMemory(Object + 0x90, VisualPosition);
+    FrameWork::Memory::WriteMemory(Navigation + 0x50, Position);
+
+    if (Stop)
+    {
+        // Pequena pausa para garantir que a física processe a mudança sem bugar
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
+        FrameWork::Memory::WriteMemory(ModelInfo + 0x2C, BackupMagic);
+    }
+}
+
+// Solicita o controle da entidade na rede (Obrigatório para servidores Multiplayer)
+void FivemSDK::network_request_control_of_entity(uint64_t entity, uint64_t ped) {
+    // Implementação interna que comunica com os buffers de rede do GTA
+    // Essencial para que outros jogadores vejam o carro se movendo
+}
+```
+
+---
+
+## 2. Lógica Principal de Exploit (Exploits.cpp)
+
+Esta é a função modular que calcula as coordenadas e executa o teletransporte do veículo para a frente do jogador.
+
+```cpp
+void Exploits::WorldPullVehicle(CVehicle* vehicle)
+{
+    if (!vehicle) return;
+
+    auto ped = g_Fivem.GetLocalPlayerInfo().Ped;
+    if (!ped) return;
+
+    uint64_t nav = vehicle->GetNavigation();
+    uint64_t model = vehicle->GetModelInfo();
+    if (!nav || !model) return;
+
+    // 1. Solicita controle da entidade
+    g_Fivem.network_request_control_of_entity((uint64_t)vehicle, (uint64_t)ped);
+
+    // 2. Calcula a posição em frente ao jogador baseado no seu Heading (olhar)
+    Vector3D localPos = ped->GetCoordinate();
+    float h = Cheat::GetPlayerHeading();
+    const float pullDist = 4.5f; // Distância que o carro vai aparecer na frente
+
+    Vector3D dest(
+        localPos.x - std::sin(h) * pullDist,
+        localPos.y + std::cos(h) * pullDist,
+        localPos.z
+    );
+
+    // 3. Executa o teletransporte
+    g_Fivem.TeleportToObject((uintptr_t)vehicle, nav, model, dest, dest, true);
+
+    // Notificação visual (Opcional)
+    std::thread([]() {
+        NotifyManager::Send("Vehicle pulled");
+    }).detach();
+}
+```
+
+---
+
+## 3. Implementação na Interface (Interface.cpp)
+
+Código para ser usado dentro do loop de renderização do ImGui (Menu). Inclui funções extras como destravar e consertar o veículo.
+
+```cpp
+// Exemplo de uso em um botão dentro do menu
+if (ImGui::Button("Pull Vehicle", ImVec2(btnW, 30)))
+{
+    // Pega o veículo selecionado na lista (Exemplo: WorldSelVehicle)
+    Cheat::CVehicle* v = vehs[WorldSelVehicle].Vehicle; 
+    Cheat::CPed* localPed = Cheat::g_Fivem.GetLocalPlayerInfo().Ped;
+
+    if (localPed && v)
+    {
+        // Garante controle de rede antes de modificar
+        Cheat::g_Fivem.network_request_control_of_entity((uint64_t)v, (uint64_t)localPed);
+
+        // Destrava o veículo (LockState 1 = Unlocked)
+        v->SetLockState(CARLOCK_UNLOCKED);
+
+        // Conserta o veículo (Fix/Repair)
+        v->FixVehicle();
+
+        // Lógica de cálculo de posição (3.5m à frente)
+        Vector3D playerPos = localPed->GetCoordinate();
+        float h = Cheat::GetPlayerHeading();
+        const float pullDist = 3.5f;
+
+        Vector3D spawnPos;
+        spawnPos.x = playerPos.x - std::sin(h) * pullDist;
+        spawnPos.y = playerPos.y + std::cos(h) * pullDist;
+        spawnPos.z = playerPos.z;
+
+        uint64_t veh_nav = v->GetNavigation();
+        uint64_t veh_model = v->GetModelInfo();
+        
+        if (veh_nav && veh_model)
+        {
+            // Teleporta o carro para a nova posição calculada
+            Cheat::g_Fivem.TeleportToObject((uintptr_t)v, veh_nav, veh_model, spawnPos, spawnPos, true);
+            
+            NotifyManager::Send("Vehicle Pulled!");
+        }
+    }
+}
+```
+
+---
+
+## 4. Notas Técnicas (Offsets)
+
+*   **Posição Visual:** `Object + 0x90`
+*   **Posição Física (Navegação):** `Navigation + 0x50`
+*   **Controle de Colisão:** `ModelInfo + 0x2C` (Setar para 0.0f remove colisões)
+*   **Estado de Tranca:** `Vehicle + 0x???` (Depende da versão, via SetLockState)

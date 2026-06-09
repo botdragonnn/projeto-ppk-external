@@ -1,0 +1,162 @@
+# CODIGO DE NOCLIP NO CARRO (FIVEM EXTERNAL)
+
+Este arquivo contém o código completo para implementar o Noclip, com suporte para veículos, baseado na estrutura do projeto.
+
+## 1. Dependências Básicas (Classes de Vetores e Memória)
+
+Para que o código funcione, você precisa de uma classe de vetores e acesso à memória do jogo.
+
+```cpp
+// Classe básica de vetor 3D
+class Vector3D {
+public:
+    float x, y, z;
+    Vector3D() : x(0), y(0), z(0) {}
+    Vector3D(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
+
+    Vector3D operator + (const Vector3D& rhs) const { return Vector3D(x + rhs.x, y + rhs.y, z + rhs.z); }
+    Vector3D operator - (const Vector3D& rhs) const { return Vector3D(x - rhs.x, y - rhs.y, z - rhs.z); }
+    Vector3D operator * (float fl) const { return Vector3D(x * fl, y * fl, z * fl); }
+
+    Vector3D Cross(const Vector3D& v) const {
+        return Vector3D(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+    }
+};
+
+// Funções de leitura/escrita de memória (Exemplo de interface)
+namespace FrameWork {
+    namespace Memory {
+        template <typename T>
+        T ReadMemory(uintptr_t address);
+        
+        template <typename T>
+        void WriteMemory(uintptr_t address, T value);
+    }
+}
+```
+
+## 2. Variáveis Globais de Controle
+
+```cpp
+bool TPVehicle = false;
+uint64_t TPModelInfo = NULL;
+uint64_t TPObject = NULL;
+uint64_t TPNavigation = NULL;
+Vector3D TPPosition = Vector3D(0, 0, 0);
+```
+
+## 3. Lógica de Atualização (Detectar se está no carro)
+
+Esta parte deve ser executada continuamente em um loop para garantir que o Noclip saiba se você está a pé ou em um veículo.
+
+```cpp
+auto ped = g_Fivem.GetLocalPlayerInfo().Ped;
+if (ped) {
+    // CPED_CONFIG_FLAG_InVehicle = 62
+    if (ped->HasConfigFlag(62)) {
+        auto CurrentVehicle = ped->GetLastVehicle();
+        if (CurrentVehicle) {
+            TPVehicle = true;
+            TPModelInfo = CurrentVehicle->GetModelInfo();
+            TPObject = (uint64_t)CurrentVehicle;
+            TPNavigation = CurrentVehicle->GetNavigation();
+            TPPosition = CurrentVehicle->GetCoordinate();
+        }
+    } else {
+        TPVehicle = false;
+        TPModelInfo = ped->GetModelInfo();
+        TPObject = (uint64_t)ped;
+        TPNavigation = ped->GetNavigation();
+        TPPosition = ped->GetCoordinate();
+    }
+}
+```
+
+## 4. Função de Teleporte (Onde a mágica acontece)
+
+```cpp
+void TeleportToObject(uintptr_t Object, uintptr_t Navigation, uintptr_t ModelInfo, Vector3D Position, Vector3D VisualPosition, bool Stop)
+{
+    float BackupMagic = 0.f;
+    if (Stop)
+    {
+        // 0x2C no ModelInfo controla a colisão (setar para 0 remove colisões)
+        BackupMagic = FrameWork::Memory::ReadMemory<float>(ModelInfo + 0x2C);
+        FrameWork::Memory::WriteMemory(ModelInfo + 0x2C, 0.f);
+    }
+
+    // Atualiza a posição visual e a de navegação
+    FrameWork::Memory::WriteMemory(Object + 0x90, VisualPosition);
+    FrameWork::Memory::WriteMemory(Navigation + 0x50, Position);
+
+    if (Stop)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(40));
+        FrameWork::Memory::WriteMemory(ModelInfo + 0x2C, BackupMagic);
+    }
+}
+```
+
+## 5. Função Principal de Noclip
+
+```cpp
+void Noclip(Vector3D CameraPos)
+{
+    if (!TPObject || !TPModelInfo) return;
+
+    static float MagicValue = 0.0f;
+    static bool Restoring = false;
+    static bool NoClipInvisible = false;
+
+    // Configurações do Cheat (Substitua pelos seus valores)
+    bool noclipEnabled = true; // g_Options.Misc.Exploits.LocalPlayer.Noclip;
+    bool noclipKeyPressed = (GetAsyncKeyState(VK_F5) & 0x8000); // Exemplo tecla F5
+    float baseSpeed = 0.5f; // g_Options.Misc.Exploits.LocalPlayer.NoClipSpeed / 100.f;
+
+    if (!noclipEnabled || !noclipKeyPressed)
+    {
+        if (Restoring)
+        {
+            // Restaura colisões ao desativar
+            FrameWork::Memory::WriteMemory(TPModelInfo + 0x2C, MagicValue);
+            Restoring = false;
+        }
+        return;
+    }
+
+    // Remove colisões ao ativar
+    if (!Restoring)
+    {
+        MagicValue = FrameWork::Memory::ReadMemory<float>(TPModelInfo + 0x2C);
+        FrameWork::Memory::WriteMemory(TPModelInfo + 0x2C, 0.f);
+        Restoring = true;
+    }
+
+    float currentSpeed = baseSpeed;
+    if (GetAsyncKeyState(VK_SHIFT)) currentSpeed *= 2.5f; // Turbo
+    else if (GetAsyncKeyState(VK_MENU)) currentSpeed *= 0.7f; // Lento (ALT)
+
+    Vector3D NewPosition = TPPosition;
+    Vector3D Right = CameraPos.Cross(Vector3D(0, 0, 1));
+    Vector3D Forward = Vector3D(CameraPos.x, CameraPos.y, 0);
+
+    float length = sqrt(Forward.x * Forward.x + Forward.y * Forward.y);
+    if (length > 0.0f) { Forward.x /= length; Forward.y /= length; }
+
+    // Controles WASD
+    if (GetAsyncKeyState('W')) { NewPosition.x += Forward.x * currentSpeed; NewPosition.y += Forward.y * currentSpeed; }
+    if (GetAsyncKeyState('S')) { NewPosition.x -= Forward.x * currentSpeed; NewPosition.y -= Forward.y * currentSpeed; }
+    if (GetAsyncKeyState('A')) { NewPosition.x -= Right.x * currentSpeed; NewPosition.y -= Right.y * currentSpeed; }
+    if (GetAsyncKeyState('D')) { NewPosition.x += Right.x * currentSpeed; NewPosition.y += Right.y * currentSpeed; }
+    
+    // Subir e Descer
+    if (GetAsyncKeyState(VK_SPACE)) NewPosition.z += currentSpeed;
+    if (GetAsyncKeyState(VK_LCONTROL)) NewPosition.z -= currentSpeed;
+
+    // Aplica o teleporte na nova posição
+    TeleportToObject(TPObject, TPNavigation, 0, NewPosition, NewPosition, false);
+
+    // Atualiza posição local para o próximo frame
+    TPPosition = NewPosition;
+}
+```

@@ -1,0 +1,887 @@
+[
+    {
+        "name": "LegitBot.AimBot.Enabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.AimBot.LegitMode",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.AimBot.ClosestFov",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.AimBot.KeyBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.AimBot.KeyBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.AimBot.TargetNPC",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.AimBot.VisibleCheck",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.AimBot.HitBox",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.AimBot.MaxDistance",
+        "type": "int",
+        "value": 250
+    },
+    {
+        "name": "LegitBot.AimBot.FOV",
+        "type": "int",
+        "value": 10
+    },
+    {
+        "name": "LegitBot.AimBot.SmoothHorizontal",
+        "type": "int",
+        "value": 2
+    },
+    {
+        "name": "LegitBot.AimBot.SmoothVertical",
+        "type": "int",
+        "value": 2
+    },
+    {
+        "name": "LegitBot.AimBot.Prediction",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.MagicBullet.Enabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.MagicBullet.KeyBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.MagicBullet.KeyBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.Trigger.Enabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.Trigger.KeyBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.Trigger.KeyBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.Trigger.ShotNPC",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.Trigger.VisibleCheck",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.Trigger.MaxDistance",
+        "type": "int",
+        "value": 250
+    },
+    {
+        "name": "LegitBot.Trigger.ReactionTime",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.Trigger.SmartTrigger",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.Trigger.Fov",
+        "type": "int",
+        "value": 10
+    },
+    {
+        "name": "LegitBot.Trigger.ShowFov",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.LegitMode",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.Enabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.ClosestFov",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.Fov",
+        "type": "int",
+        "value": 10
+    },
+    {
+        "name": "LegitBot.SilentAim.KeyBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.SilentAim.KeyBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.SilentAim.MissChance",
+        "type": "int",
+        "value": 1
+    },
+    {
+        "name": "LegitBot.SilentAim.ShotNPC",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.VisibleCheck",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.MaxDistance",
+        "type": "int",
+        "value": 250
+    },
+    {
+        "name": "LegitBot.SilentAim.HitBox",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "LegitBot.SilentAim.ShowFov",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "LegitBot.SilentAim.MagicBullets",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.Enabled",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "Visuals.ESP.Players.ShowLocalPlayer",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.ShowNPCs",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.UpdateESP",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.VisibleOnly",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.ExcludeDeads",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "Visuals.ESP.Players.RenderDistance",
+        "type": "int",
+        "value": 200
+    },
+    {
+        "name": "Visuals.ESP.Players.Box",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.Minimap",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.MinimapRange",
+        "type": "float",
+        "value": 65.0
+    },
+    {
+        "name": "Visuals.ESP.Players.Skeleton",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "Visuals.ESP.Players.Name",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "Visuals.ESP.Players.HealthBar",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.ArmorBar",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.WeaponName",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.Distance",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.SnapLines",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.FriendsMarker",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.HighlightVisible",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Players.WeaponIcon",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.Enabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.Marker",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.Door",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.Name",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.RenderDistance",
+        "type": "int",
+        "value": 250
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.Distance",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.IgnoreOccupiedVehicles",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.Model",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.SnapLines",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Visuals.ESP.Vehicles.LockStatus",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Screen.ShowAimbotFov",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Screen.ShowAimbotRGB",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Screen.ShowSilentAimFov",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.v_Traction",
+        "type": "float",
+        "value": 5.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.boostvehicle",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.v_Boost",
+        "type": "float",
+        "value": 1.2000000476837158
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.vehSpeed",
+        "type": "float",
+        "value": 0.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Shrink",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Invencible",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Invencibletest",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.GodmodeBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.StealCarEnabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Unlock",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.GodmodeBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.ModifySpeed",
+        "type": "float",
+        "value": 1.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.InfiniteCombatRoll",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.InfiniteStamina",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.RemoveCollisions",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.nospread",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.norecoil",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Invisible",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.noreload",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.SeatBelt",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.NoRagdoll",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Godmodesafe",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Godmodesafe2",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.customspreadvalue",
+        "type": "float",
+        "value": 0.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.customrecoilvalue",
+        "type": "float",
+        "value": 0.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.StealthMode",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.NoFallFromVehicle",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.revive",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.GodMode",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.GodModeKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.GodModeKeyState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.BoomFist",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.SuperPunch",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.speed",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Noclip",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.speed_value",
+        "type": "float",
+        "value": 1.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.antihs",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.LockAllCars",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.UnLockAllCars",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.NoclipKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.NoclipKeyState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.NoClipSpeed",
+        "type": "float",
+        "value": 10.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.TpWayKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.TpWayKeyState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.ReplayTP",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.ReplayTPBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.ReplayTPBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.FastRun",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.RunSpeed",
+        "type": "float",
+        "value": 1.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.ForceWeaponWheel",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.DamageBoost",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.DamageMultiplier",
+        "type": "float",
+        "value": 2.0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.God1k",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.God1kKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.God1kKeyState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.LocalPlayer.Boost",
+        "type": "float",
+        "value": 1.0
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.GodMode",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.JumpingCar",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.ExplodeCar",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.RocketBoost",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.RocketBoostJumping",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.Ramp",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.Parachute",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.ExplodeOnImpact",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.Tank",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.RocketBoostKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.JumpingCarKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.RocketBoostStrength",
+        "type": "float",
+        "value": 5.0
+    },
+    {
+        "name": "Misc.Exploits.Vehicle.JumpGravity",
+        "type": "float",
+        "value": 3.0
+    },
+    {
+        "name": "Misc.Exploits.Weapon.ExplosiveAmmo",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Weapon.InfiniteAmmoEnabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Weapon.RemoveSpread",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Weapon.RemoveRecoil",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Weapon.NoReload",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Weapon.DoubleShot",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Trolls.VehicleGrabEnabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Trolls.GrabKey",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Trolls.GrabKeyState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "Misc.Trolls.ThrowForce",
+        "type": "float",
+        "value": 50.0
+    },
+    {
+        "name": "Misc.Trolls.HoldDistance",
+        "type": "float",
+        "value": 4.0
+    },
+    {
+        "name": "Misc.Trolls.HoldHeight",
+        "type": "float",
+        "value": 2.5
+    },
+    {
+        "name": "Misc.Trolls.ShowVehicleESP",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.ShowActiveFeaturesOverlay",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "General.LogoScale",
+        "type": "float",
+        "value": 1.0
+    },
+    {
+        "name": "General.ShutDown",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "General.SafeMode",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "General.MenuKey",
+        "type": "int",
+        "value": 45
+    },
+    {
+        "name": "General.KeyBind",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "General.KeyBindState",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "General.CaptureBypass",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "General.WaterMark",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "General.Particles",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "General.ThreadDelay",
+        "type": "int",
+        "value": 1
+    },
+    {
+        "name": "General.FontEspStyle",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "General.FontLetterCase",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "General.FontHighlight",
+        "type": "int",
+        "value": 2
+    },
+    {
+        "name": "General.FontHeight",
+        "type": "float",
+        "value": 0.0
+    },
+    {
+        "name": "General.VSync",
+        "type": "bool",
+        "value": true
+    },
+    {
+        "name": "General.WaterMarkCol",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "General.ProcessPriority",
+        "type": "int",
+        "value": 0
+    },
+    {
+        "name": "General.ArrayList",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Handling.Enabled",
+        "type": "bool",
+        "value": false
+    },
+    {
+        "name": "Misc.Exploits.Handling.Acceleration",
+        "type": "float",
+        "value": 0.0
+    },
+    {
+        "name": "Misc.Exploits.Handling.BrakeForce",
+        "type": "float",
+        "value": 0.0
+    },
+    {
+        "name": "Misc.Exploits.Handling.TractionCurveMin",
+        "type": "float",
+        "value": 0.0
+    }
+]
