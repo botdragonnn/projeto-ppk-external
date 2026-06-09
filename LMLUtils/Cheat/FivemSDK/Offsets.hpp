@@ -50,5 +50,6 @@
 			inline extern uint64_t m_WeaponAmmo = 0x60;
 			inline extern uint64_t m_Spread = 0;
 			inline extern uint64_t m_RaycastTable = 0;
+			extern uint64_t Coronhada;
 		}
 	}

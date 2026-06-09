@@ -234,6 +234,9 @@ namespace Cheat
         SetupItem(&g_Options.Misc.Exploits.Weapon.NoReload, false, "Misc.Exploits.Weapon.NoReload");
         SetupItem(&g_Options.Misc.Exploits.Weapon.WeaponScaleEnabled, false, "Misc.Exploits.Weapon.WeaponScaleEnabled");
         SetupItem(&g_Options.Misc.Exploits.Weapon.WeaponScale, 1.0f, "Misc.Exploits.Weapon.WeaponScale");
+        SetupItem(&g_Options.Misc.Exploits.Weapon.Coronhada, false, "Misc.Exploits.Weapon.Coronhada");
+        SetupItem(&g_Options.Misc.Exploits.Weapon.CoronhadaKey, 0, "Misc.Exploits.Weapon.CoronhadaKey");
+        SetupItem(&g_Options.Misc.Exploits.Weapon.CoronhadaKeyState, 0, "Misc.Exploits.Weapon.CoronhadaKeyState");
 
         // Misc - Trolls
         SetupItem(&g_Options.Misc.Trolls.VehicleGrabEnabled, false, "Misc.Trolls.VehicleGrabEnabled");

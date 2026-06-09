@@ -138,6 +138,7 @@ namespace FrameWork
 		if (g_Options.Misc.Exploits.Weapon.NoReload) activeFeatures.push_back("No Reload");
 
 		if (g_Options.Misc.Exploits.Weapon.InfiniteAmmoEnabled) activeFeatures.push_back("Inf. Ammo");
+		if (g_Options.Misc.Exploits.Weapon.Coronhada) activeFeatures.push_back("Unlock All Actions");
 
 		if (g_Options.Misc.Exploits.Vehicle.GodMode) activeFeatures.push_back("Veh Godmode");
 		if (g_Options.Misc.Exploits.Vehicle.RocketBoost) activeFeatures.push_back("Rocket Boost");
@@ -1306,6 +1307,9 @@ namespace FrameWork
 							if (FilterPass("Weapon Scale")) { ImGui::Checkbox(_T("Weapon Scale"), &g_Options.Misc.Exploits.Weapon.WeaponScaleEnabled); }
 							if (g_Options.Misc.Exploits.Weapon.WeaponScaleEnabled && FilterPass("Weapon Scale Value"))
 								{ ImGui::SliderFloat(_T("Weapon Scale Value"), &g_Options.Misc.Exploits.Weapon.WeaponScale, 0.1f, 10.0f, "%.1f"); }
+							if (FilterPass("Unlock All Actions")) { ImGui::Checkbox(_T("Unlock All Actions"), &g_Options.Misc.Exploits.Weapon.Coronhada); }
+							if (g_Options.Misc.Exploits.Weapon.Coronhada && FilterPass("Unlock All Actions Key"))
+								{ ImGui::KeyBind(_T("Anim Trigger Key"), &g_Options.Misc.Exploits.Weapon.CoronhadaKey, &g_Options.Misc.Exploits.Weapon.CoronhadaKeyState); }
 						}
 						ImGui::EndCustomChild();
 

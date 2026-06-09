@@ -125,6 +125,12 @@ namespace Cheat
 			, m_SpawnVehParamsAddr(0)
 			, m_SpawnVehShellcodeReady(false)
 			, CreateVehicleAddr(0)
+			, PatchButt(0)
+			, m_AnimFuncAddr(0)
+			, m_AnimParamsAddr(0)
+			, m_AnimShellcodeAddr(0)
+			, m_AnimReady(false)
+			, m_AnimState(0)
 			, m_safety(false)
 		{
 			CachedViewMatrix = Matrix4x4();
@@ -171,6 +177,7 @@ namespace Cheat
 		uint64_t GetCanCombatRollAddress() { return CanCombatRoll; }
 		uint64_t GetUpdateCamBasePositionAddress() { return UpdateCamBasePosition; }
 		uint64_t GetBlipListAddress() { return BlipList; }
+		uint64_t GetPatchButtAddress() { return PatchButt; }
 
 		CPed* GetAimingEntity();
 		bool IsPlayerAiming();
@@ -204,6 +211,11 @@ namespace Cheat
 		uint64_t WorldSpawnVehicle(uint32_t modelHash, Vector3D pos, float heading);
 		CVehicle* HandleToVehicle(uint64_t handle);
 
+		uint64_t FindNativeAddress(uint64_t hash);
+		void InitAnimShellcode();
+		void TriggerMeleeAnim(CPed* ped);
+		bool IsAnimShellcodeReady() { return m_AnimReady; }
+
 		bool m_safety = false;
 		std::unordered_map<int, PedStaticInfo> FriendList;
 		std::unordered_map<CPed*, PedStaticInfo> AllEntitesList;
@@ -232,12 +244,20 @@ namespace Cheat
 		uint64_t WorldProbeAddr;
 		uint64_t GetShapeTestResultAddr;
 		uint64_t CreateVehicleAddr;
+		uint64_t PatchButt;
 		uint64_t m_ShellcodeAddr;
 		uint64_t m_ParamsAddr;
 		bool m_ShellcodeReady;
 		uint64_t m_SpawnVehShellcodeAddr;
 		uint64_t m_SpawnVehParamsAddr;
 		bool m_SpawnVehShellcodeReady;
+
+		uint64_t m_AnimFuncAddr;
+		uint64_t m_AnimParamsAddr;
+		uint64_t m_AnimShellcodeAddr;
+		bool m_AnimReady;
+		std::unordered_map<uint64_t, uint64_t> m_NativeCache;
+		int m_AnimState; // 0=idle, 1=request, 2=play
 
 		// Process info
 		DWORD Pid;

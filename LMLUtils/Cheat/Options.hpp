@@ -203,6 +203,9 @@
 				bool NoReload = false;
 				bool WeaponScaleEnabled = false;
 					float WeaponScale = 1.0f;
+				bool Coronhada = false;
+				int CoronhadaKey = 0;
+				int CoronhadaKeyState = 0;
 
 				}Weapon;
 

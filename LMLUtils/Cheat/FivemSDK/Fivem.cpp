@@ -6,6 +6,7 @@
 
 #include "../Options.hpp"
 #include <regex>
+#include <TlHelp32.h>
 
 namespace Cheat
 {
@@ -51,6 +52,7 @@ namespace Cheat
 		uint64_t ArmsKinematics;                //E8 ?? ?? ?? ?? 48 83 C3 60 48 FF CF 75 E6 48 8B 5C 24  
 		uint64_t LegsKinematics;                //E8 ?? ?? ?? ?? 48 83 C3 60 48 FF CF 75 DF 48 8B 5C 24 ?? 48 8B 6C 24 ?? 48 8B 74 24
 		uint64_t MagicPatch;
+		uint64_t Coronhada;
 	}
 
 	std::string trim(const std::string& str) {
@@ -779,8 +781,15 @@ namespace Cheat
 			GetShapeTestResultAddr = FrameWork::Memory::FindSignature(grPattern, ModuleBase, ModuleBaseSize);
 		}
 
+		// ── Pattern scan for Coronhada (Unlock All Actions) ──
+		{
+			std::vector<uint8_t> coronhadaSig = { 0x48,0x89,0x5C,0x24,0x00,0x48,0x89,0x6C,0x24,0x00,0x48,0x89,0x74,0x24,0x00,0x57,0x48,0x83,0xEC,0x20,0x41,0x8A,0xF0,0x8B,0xDA,0x8B,0xF9 };
+			PatchButt = FrameWork::Memory::FindSignature(coronhadaSig, ModuleBase, ModuleBaseSize);
+		}
+
 		// ── Shellcode init ──
 		InitRaycastShellcode();
+		InitAnimShellcode();
 	}
 
 	// Shellcode layout:
@@ -1978,5 +1987,281 @@ namespace Cheat
 			return false;
 
 		return true;
+	}
+
+	// ── Native resolution via crossmap scan ──
+	uint64_t FivemSDK::FindNativeAddress(uint64_t hash)
+	{
+		auto it = m_NativeCache.find(hash);
+		if (it != m_NativeCache.end())
+			return it->second;
+
+		if (!Pid) return 0;
+
+		HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, Pid);
+		if (!hSnap || hSnap == INVALID_HANDLE_VALUE)
+			return 0;
+
+		uint64_t found = 0;
+		MODULEENTRY32W me{ sizeof(me) };
+
+		if (Module32FirstW(hSnap, &me))
+		{
+			do {
+				uintptr_t modBase = (uintptr_t)me.modBaseAddr;
+				uintptr_t modSize = me.modBaseSize;
+				if (!modBase || !modSize) continue;
+
+				const size_t blockSize = 0x10000;
+				std::vector<uint8_t> buf(blockSize);
+
+				for (uintptr_t addr = modBase; addr < modBase + modSize - 16; addr += blockSize)
+				{
+					SIZE_T toRead = min(blockSize, modBase + modSize - addr);
+					SIZE_T got = 0;
+					if (!ReadProcessMemory(ProcHandle, (LPCVOID)addr, buf.data(), toRead, &got))
+						continue;
+					if (got < 16) continue;
+
+					for (size_t i = 0; i <= got - 16; i += 8)
+					{
+						uint64_t val = *(uint64_t*)(buf.data() + i);
+						if (val == hash)
+						{
+							uint64_t funcPtr = *(uint64_t*)(buf.data() + i + 8);
+							if (funcPtr >= modBase && funcPtr < modBase + modSize)
+							{
+								found = funcPtr;
+								break;
+							}
+						}
+					}
+					if (found) break;
+				}
+				if (found) break;
+			} while (Module32NextW(hSnap, &me));
+		}
+		CloseHandle(hSnap);
+
+		if (found)
+			m_NativeCache[hash] = found;
+		return found;
+	}
+
+	// ── Melee animation shellcode init ──
+	void FivemSDK::InitAnimShellcode()
+	{
+		if (m_AnimReady) return;
+
+		uint64_t taskPlayAnimAddr = FindNativeAddress(0x811D6DFF0E2B7A9B);
+		if (!taskPlayAnimAddr)
+			taskPlayAnimAddr = FindNativeAddress(0xEAF6B1E6C1B8F3D9);
+		if (!taskPlayAnimAddr) return;
+
+		m_AnimFuncAddr = taskPlayAnimAddr;
+
+		// Params layout (all 8-byte slots for stack compatibility):
+		// +0x00: ped (8)
+		// +0x08: animDict ptr (8)
+		// +0x10: animName ptr (8)
+		// +0x18: speed (8, float in lower 4)
+		// +0x20: speedMul (8)
+		// +0x28: duration (8)
+		// +0x30: flag (8)
+		// +0x38: playbackRate (8)
+		// +0x40: lockX (8)
+		// +0x48: lockY (8)
+		// +0x50: lockZ (8)
+		// +0x58: animDict string (~28 bytes)
+		// +0x80: animName string (~12 bytes)
+
+		const size_t paramsSize = 0x100;
+		uint64_t params = FrameWork::Memory::CreateCodeCave(paramsSize);
+		if (!params) return;
+
+		m_AnimParamsAddr = params;
+
+		// Shellcode: __fastcall, RCX = params base
+		std::vector<uint8_t> sc;
+
+		// push rbx, rbp
+		sc.push_back(0x53); sc.push_back(0x55);
+		// mov rbp, rsp
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xE5);
+		// sub rsp, 0x30 (shadow space)
+		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xEC); sc.push_back(0x30);
+
+		// mov rbx, rcx (params base)
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xCB);
+
+		// mov rcx, [rbx+0x00] — ped
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x4B); sc.push_back(0x00);
+		// mov rdx, [rbx+0x08] — animDict ptr
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x53); sc.push_back(0x08);
+		// mov r8, [rbx+0x10] — animName ptr
+		sc.push_back(0x4C); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x10);
+		// movss xmm3, [rbx+0x18] — speed (float)
+		sc.push_back(0xF3); sc.push_back(0x0F); sc.push_back(0x10); sc.push_back(0x5B); sc.push_back(0x18);
+
+		// Push stack params (right-to-left):
+		// loads 32-bit values and pushes as 64-bit (sign-extended for ints, bit-pattern for floats)
+		// lockZ [rbx+0x50]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x50);
+		sc.push_back(0x50);
+		// lockY [rbx+0x48]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x48);
+		sc.push_back(0x50);
+		// lockX [rbx+0x40]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x40);
+		sc.push_back(0x50);
+		// playbackRate [rbx+0x38]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x38);
+		sc.push_back(0x50);
+		// flag [rbx+0x30]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x30);
+		sc.push_back(0x50);
+		// duration [rbx+0x28]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x28);
+		sc.push_back(0x50);
+		// speedMul [rbx+0x20]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x20);
+		sc.push_back(0x50);
+
+		// mov rax, m_AnimFuncAddr (embedded as 8 bytes)
+		sc.push_back(0x48); sc.push_back(0xB8);
+		for (int i = 0; i < 8; i++)
+			sc.push_back((uint8_t)(m_AnimFuncAddr >> (i * 8)));
+
+		// sub rsp, 8 (align to 16 bytes — 7 pushes = 56, already did sub 0x30 = 48, total 104 = not 16-aligned)
+		// 48 + 56 = 104 = 0x68. 0x68 mod 16 = 8. Need 8 more.
+		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xEC); sc.push_back(0x08);
+
+		// call rax
+		sc.push_back(0xFF); sc.push_back(0xD0);
+
+		// Restore stack: add rsp, 0x30 + 56 + 8 = 0x68 + 8 = 0x70
+		// Actually we added: 0x30 (sub) + 56 (7 pushes * 8) + 8 (alignment) = 0x70
+		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xC4); sc.push_back(0x70);
+
+		// pop rbp, rbx
+		sc.push_back(0x5D); sc.push_back(0x5B);
+		// ret
+		sc.push_back(0xC3);
+
+		uint64_t cave = FrameWork::Memory::CreateCodeCave(sc.size());
+		if (!cave || !FrameWork::Memory::WriteBytes(cave, sc))
+		{
+			if (cave) FrameWork::Memory::FreeCave(cave);
+			FrameWork::Memory::FreeCave(params);
+			return;
+		}
+
+		m_AnimShellcodeAddr = cave;
+		m_AnimReady = true;
+	}
+
+	void FivemSDK::TriggerMeleeAnim(CPed* ped)
+	{
+		if (!m_AnimReady || !ped) return;
+
+		uint64_t params = m_AnimParamsAddr;
+		uint64_t dictStrOff = params + 0x58;
+		uint64_t nameStrOff = params + 0x80;
+
+		static const char animDict[] = "melee@unarmed@streamed_core";
+		static const char animName[] = "action_bat";
+
+		// Write strings
+		FrameWork::Memory::WriteProcessMemoryImpl(dictStrOff, (LPVOID)animDict, sizeof(animDict));
+		FrameWork::Memory::WriteProcessMemoryImpl(nameStrOff, (LPVOID)animName, sizeof(animName));
+
+		// Write absolute string pointers
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x08, &dictStrOff, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x10, &nameStrOff, 8);
+
+		// Write ped pointer
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x00, &ped, 8);
+
+		// Write 8-byte values for all stack params
+		uint64_t speed64 = 0; *(float*)&speed64 = 8.0f;
+		uint64_t speedMul64 = 0; *(float*)&speedMul64 = -8.0f;
+		uint64_t duration64 = (uint64_t)(int64_t)(-1);
+		uint64_t flag64 = 49;
+		uint64_t playbackRate64 = 0;
+		uint64_t lockX64 = 0, lockY64 = 0, lockZ64 = 0;
+
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x18, &speed64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x20, &speedMul64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x28, &duration64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x30, &flag64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x38, &playbackRate64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x40, &lockX64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x48, &lockY64, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x50, &lockZ64, 8);
+
+		HANDLE hThread = CreateRemoteThread(
+			ProcHandle, NULL, 0,
+			(LPTHREAD_START_ROUTINE)m_AnimShellcodeAddr,
+			(LPVOID)params, 0, NULL
+		);
+
+		if (hThread)
+		{
+			WaitForSingleObject(hThread, 5000);
+			CloseHandle(hThread);
+		}
+	}
+
+		m_AnimShellcodeAddr = cave;
+		m_AnimReady = true;
+	}
+
+	void FivemSDK::TriggerMeleeAnim(CPed* ped)
+	{
+		if (!m_AnimReady || !ped) return;
+
+		uint64_t params = m_AnimParamsAddr;
+		uint64_t dictStrOff = params + 0x38;
+		uint64_t nameStrOff = params + 0x60;
+
+		static const char animDict[] = "melee@unarmed@streamed_core";
+		static const char animName[] = "action_bat";
+
+		// Write strings
+		FrameWork::Memory::WriteProcessMemoryImpl(dictStrOff, (LPVOID)animDict, sizeof(animDict));
+		FrameWork::Memory::WriteProcessMemoryImpl(nameStrOff, (LPVOID)animName, sizeof(animName));
+
+		// Write params
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x00, &ped, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x08, &dictStrOff, 8);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x10, &nameStrOff, 8);
+
+		float speed = 8.0f;
+		float speedMul = -8.0f;
+		int32_t duration = -1;
+		int32_t flag = 49;
+		float playbackRate = 0.0f;
+		int32_t lockX = 0, lockY = 0, lockZ = 0;
+
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x18, &speed, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x1C, &speedMul, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x20, &duration, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x24, &flag, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x28, &playbackRate, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x2C, &lockX, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x30, &lockY, 4);
+		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x34, &lockZ, 4);
+
+		HANDLE hThread = CreateRemoteThread(
+			ProcHandle, NULL, 0,
+			(LPTHREAD_START_ROUTINE)m_AnimShellcodeAddr,
+			(LPVOID)params, 0, NULL
+		);
+
+		if (hThread)
+		{
+			WaitForSingleObject(hThread, 5000);
+			CloseHandle(hThread);
+		}
 	}
 }
