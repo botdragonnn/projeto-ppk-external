@@ -1308,8 +1308,6 @@ namespace FrameWork
 							if (g_Options.Misc.Exploits.Weapon.WeaponScaleEnabled && FilterPass("Weapon Scale Value"))
 								{ ImGui::SliderFloat(_T("Weapon Scale Value"), &g_Options.Misc.Exploits.Weapon.WeaponScale, 0.1f, 10.0f, "%.1f"); }
 							if (FilterPass("Unlock All Actions")) { ImGui::Checkbox(_T("Unlock All Actions"), &g_Options.Misc.Exploits.Weapon.Coronhada); }
-							if (g_Options.Misc.Exploits.Weapon.Coronhada && FilterPass("Unlock All Actions Key"))
-								{ ImGui::KeyBind(_T("Anim Trigger Key"), &g_Options.Misc.Exploits.Weapon.CoronhadaKey, &g_Options.Misc.Exploits.Weapon.CoronhadaKeyState); }
 						}
 						ImGui::EndCustomChild();
 
@@ -1478,9 +1476,20 @@ namespace FrameWork
 							if (FilterPass("Rocket Boost Key")) { ImGui::KeyBind(_T("Rocket Boost Key"), &g_Options.Misc.Exploits.Vehicle.RocketBoostKey, &g_Options.Misc.Exploits.Vehicle.RocketBoostKeyState); }
 							if (FilterPass("Boost Strength")) { ImGui::SliderFloat(_T("Boost Strength"), &g_Options.Misc.Exploits.Vehicle.RocketBoostStrength, 0.0f, 20.0f, XorStr("%.1f")); }
 							ImGui::Spacing();
-							ImGui::Separator();
-							ImGui::Spacing();
-							if (FilterPass("Vehicle Boost")) { ImGui::SliderFloat(_T("Vehicle Boost"), &g_Options.Misc.Exploits.LocalPlayer.v_Boost, 1.0f, 100.0f, XorStr("%.1f")); }
+							ImGui::SeparatorText(_T("Modify Handling"));
+							if (FilterPass("Modify Handling")) { ImGui::Checkbox(_T("Modify Handling"), &g_Options.Misc.Exploits.Vehicle.ModifyHandling); }
+							if (g_Options.Misc.Exploits.Vehicle.ModifyHandling)
+							{
+								if (FilterPass("Acceleration")) { ImGui::SliderInt(_T("Acceleration"), &g_Options.Misc.Exploits.Vehicle.HandlingAccel, 0, 400, XorStr("%d")); }
+								if (FilterPass("Brake Force")) { ImGui::SliderInt(_T("Brake Force"), &g_Options.Misc.Exploits.Vehicle.HandlingBrake, 0, 100, XorStr("%d")); }
+								if (FilterPass("Traction")) { ImGui::SliderInt(_T("Traction"), &g_Options.Misc.Exploits.Vehicle.HandlingTraction, 0, 100, XorStr("%d")); }
+								if (ImGui::Button(_T("Reset"), ImVec2(-1, 0)))
+								{
+									g_Options.Misc.Exploits.Vehicle.HandlingAccel = 0;
+									g_Options.Misc.Exploits.Vehicle.HandlingBrake = 0;
+									g_Options.Misc.Exploits.Vehicle.HandlingTraction = 0;
+								}
+							}
 						}
 						ImGui::EndCustomChild();
 

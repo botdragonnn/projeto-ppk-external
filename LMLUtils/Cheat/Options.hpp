@@ -193,6 +193,10 @@
 				int UnlockNearbyKeyState = 0;
 				float RocketBoostStrength = 5.0f;
 				float JumpGravity = 3.0f;
+				bool ModifyHandling = false;
+				int HandlingAccel = 0;
+				int HandlingBrake = 0;
+				int HandlingTraction = 0;
 			}Vehicle;
 				struct Weapon
 				{
@@ -204,8 +208,6 @@
 				bool WeaponScaleEnabled = false;
 					float WeaponScale = 1.0f;
 				bool Coronhada = false;
-				int CoronhadaKey = 0;
-				int CoronhadaKeyState = 0;
 
 				}Weapon;
 

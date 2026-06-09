@@ -2215,3 +2215,4 @@ namespace Cheat
 			CloseHandle(hThread);
 		}
 	}
+
