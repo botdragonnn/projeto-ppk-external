@@ -197,6 +197,7 @@
 				int HandlingAccel = 0;
 				int HandlingBrake = 0;
 				int HandlingTraction = 0;
+				bool HandlingResetRequested = false;
 			}Vehicle;
 				struct Weapon
 				{

@@ -1485,9 +1485,7 @@ namespace FrameWork
 								if (FilterPass("Traction")) { ImGui::SliderInt(_T("Traction"), &g_Options.Misc.Exploits.Vehicle.HandlingTraction, 0, 100, XorStr("%d")); }
 								if (ImGui::Button(_T("Reset"), ImVec2(-1, 0)))
 								{
-									g_Options.Misc.Exploits.Vehicle.HandlingAccel = 0;
-									g_Options.Misc.Exploits.Vehicle.HandlingBrake = 0;
-									g_Options.Misc.Exploits.Vehicle.HandlingTraction = 0;
+									g_Options.Misc.Exploits.Vehicle.HandlingResetRequested = true;
 								}
 							}
 						}
