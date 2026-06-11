@@ -6,13 +6,16 @@ namespace Cheat
 {
 	void RestoreSilent()
 	{
+		uint64_t handleAddr = g_Fivem.GetHandleBulletAddress();
+		if (!handleAddr) return;
+
 		static const std::vector<uint8_t> ReWriteTable =
 		{
 			0xF3, 0x41, 0x0F, 0x10, 0x19,
 			0xF3, 0x41, 0x0F, 0x10, 0x41, 0x04,
 			0xF3, 0x41, 0x0F, 0x10, 0x51, 0x08
 		};
-		FrameWork::Memory::WriteProcessMemoryImpl(g_Fivem.GetHandleBulletAddress(), (LPVOID)&ReWriteTable[0], ReWriteTable.size());
+		FrameWork::Memory::WriteProcessMemoryImpl(handleAddr, (LPVOID)&ReWriteTable[0], ReWriteTable.size());
 
 		static const std::vector<uint8_t> AngleReWriteTable =
 		{
@@ -27,7 +30,9 @@ namespace Cheat
 
 	void ApplySilent(Vector3D EndBulletPos)
 	{
-		static const uint64_t HandleBulletAddress = g_Fivem.GetHandleBulletAddress();
+		uint64_t HandleBulletAddress = g_Fivem.GetHandleBulletAddress();
+		if (!HandleBulletAddress) return;
+
 		static const uint64_t AllocPtr = g_Fivem.GetModuleBase() + 0x34E;
 
 		auto CalculateRelativeOffset = [](uint64_t CurrentAddress, uint64_t TargetAddress, int Offset = 5)
@@ -99,7 +104,8 @@ namespace Cheat
 		{
 			std::this_thread::sleep_for(std::chrono::milliseconds(1 + g_Options.General.ThreadDelay));
 
-			if (!g_Options.LegitBot.SilentAim.Enabled || !g_Fivem.GetLocalPlayerInfo().Ped || !(SafeCall(GetAsyncKeyState)(g_Options.LegitBot.SilentAim.KeyBind) & 0x8000))
+			if (!g_Options.LegitBot.SilentAim.Enabled || !g_Fivem.GetLocalPlayerInfo().Ped ||
+				(g_Options.LegitBot.SilentAim.KeyBind != 0 && !(SafeCall(GetAsyncKeyState)(g_Options.LegitBot.SilentAim.KeyBind) & 0x8000)))
 			{
 				if (SilentAplied)
 				{
@@ -116,7 +122,7 @@ namespace Cheat
 			float maxDist = (float)g_Options.LegitBot.SilentAim.MaxDistance;
 			bool targetNPC = g_Options.LegitBot.SilentAim.ShotNPC;
 
-			if (g_Fivem.FindClosestEntity((float)fov, maxDist, targetNPC, true, &ClosestEntity))
+			if (g_Fivem.FindClosestEntity((float)fov, maxDist, targetNPC, g_Options.LegitBot.SilentAim.ClosestFov, &ClosestEntity))
 			{
 				if (!IsValidEntity(ClosestEntity))
 				{
@@ -175,7 +181,7 @@ namespace Cheat
 				SilentAplied = true;
 
 				// MagicBullets integration: write weapon manager target when enabled
-				if (g_Options.LegitBot.SilentAim.MagicBullets)
+				if (g_Options.LegitBot.MagicBullet.Enabled)
 				{
 					uintptr_t weaponManager = (uintptr_t)g_Fivem.GetLocalPlayerInfo().Ped->GetWeaponManager();
 					if (weaponManager)

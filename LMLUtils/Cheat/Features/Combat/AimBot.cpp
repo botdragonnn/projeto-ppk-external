@@ -52,8 +52,8 @@ namespace Cheat
                         continue;
                 }
 
-                if (!SafeCall(GetAsyncKeyState)(g_Options.LegitBot.AimBot.KeyBind))
-                    continue;
+				if (g_Options.LegitBot.AimBot.KeyBind != 0 && !(SafeCall(GetAsyncKeyState)(g_Options.LegitBot.AimBot.KeyBind) & 0x8000))
+					continue;
 
                 // Alvo validado: define como Ped na mira
                 AimbotTargetPed = (DWORD_PTR)ClosestEntity.StaticInfo.Ped;
