@@ -1480,9 +1480,9 @@ namespace FrameWork
 							if (FilterPass("Modify Handling")) { ImGui::Checkbox(_T("Modify Handling"), &g_Options.Misc.Exploits.Vehicle.ModifyHandling); }
 							if (g_Options.Misc.Exploits.Vehicle.ModifyHandling)
 							{
-								if (FilterPass("Acceleration")) { ImGui::SliderInt(_T("Acceleration"), &g_Options.Misc.Exploits.Vehicle.HandlingAccel, 0, 400, XorStr("%d")); }
-								if (FilterPass("Brake Force")) { ImGui::SliderInt(_T("Brake Force"), &g_Options.Misc.Exploits.Vehicle.HandlingBrake, 0, 100, XorStr("%d")); }
-								if (FilterPass("Traction")) { ImGui::SliderInt(_T("Traction"), &g_Options.Misc.Exploits.Vehicle.HandlingTraction, 0, 100, XorStr("%d")); }
+								if (FilterPass("Acceleration")) { ImGui::SliderInt(_T("Acceleration"), &g_Options.Misc.Exploits.Vehicle.HandlingAccel, 1, 100, XorStr("%d")); }
+								if (FilterPass("Brake Force")) { ImGui::SliderInt(_T("Brake Force"), &g_Options.Misc.Exploits.Vehicle.HandlingBrake, 1, 100, XorStr("%d")); }
+								if (FilterPass("Traction")) { ImGui::SliderInt(_T("Traction"), &g_Options.Misc.Exploits.Vehicle.HandlingTraction, 1, 100, XorStr("%d")); }
 								if (ImGui::Button(_T("Reset"), ImVec2(-1, 0)))
 								{
 									g_Options.Misc.Exploits.Vehicle.HandlingResetRequested = true;
