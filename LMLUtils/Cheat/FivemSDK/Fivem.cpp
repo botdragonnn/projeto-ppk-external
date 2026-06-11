@@ -2035,6 +2035,7 @@ namespace Cheat
 								break;
 							}
 						}
+						if (found) break;
 					}
 					if (found) break;
 				}
@@ -2048,12 +2049,10 @@ namespace Cheat
 		return found;
 	}
 
-	// ── Melee animation shellcode init ──
 	void FivemSDK::InitAnimShellcode()
 	{
 		if (m_AnimReady) return;
 
-		// Try multiple known hashes for TASK_PLAY_ANIM
 		uint64_t taskPlayAnimAddr = FindNativeAddress(0xEAF6B1E6C1B8F3D9);
 		if (!taskPlayAnimAddr)
 			taskPlayAnimAddr = FindNativeAddress(0x811D6DFF0E2B7A9B);
@@ -2061,96 +2060,52 @@ namespace Cheat
 
 		m_AnimFuncAddr = taskPlayAnimAddr;
 
-		// Params layout (all 8-byte slots for stack compatibility):
-		// +0x00: ped (8)
-		// +0x08: animDict ptr (8)
-		// +0x10: animName ptr (8)
-		// +0x18: speed (8, float in lower 4)
-		// +0x20: speedMul (8)
-		// +0x28: duration (8)
-		// +0x30: flag (8)
-		// +0x38: playbackRate (8)
-		// +0x40: lockX (8)
-		// +0x48: lockY (8)
-		// +0x50: lockZ (8)
-		// +0x58: animDict string (~28 bytes)
-		// +0x80: animName string (~12 bytes)
-
 		const size_t paramsSize = 0x100;
 		uint64_t params = FrameWork::Memory::CreateCodeCave(paramsSize);
 		if (!params) return;
 
 		m_AnimParamsAddr = params;
 
-		// Shellcode (MS x64 __fastcall calling convention):
-		// RCX = params base (passed by CreateRemoteThread)
-		// Params layout in our struct:
-		//   +0x00: ped ptr (8)
-		//   +0x08: animDict str ptr (8)
-		//   +0x10: animName str ptr (8)
-		//   +0x18: speed (8 bytes, float in lower 4)
-		//   +0x20: speedMul (8)
-		//   +0x28: duration (8)
-		//   +0x30: flag (8)
-		//   +0x38: playbackRate (8)
-		//   +0x40: lockX (8)
-		//   +0x48: lockY (8)
-		//   +0x50: lockZ (8)
-		//   +0x58: animDict string
-		//   +0x80: animName string
 		std::vector<uint8_t> sc;
 
-		// save non-volatile regs
-		sc.push_back(0x53);                           // push rbx
-		sc.push_back(0x55);                           // push rbp
-		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xE5); // mov rbp, rsp
-
-		// allocate shadow space (32) + 7 stack params (56) + alignment (8) = 0x60
+		sc.push_back(0x53);
+		sc.push_back(0x55);
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xE5);
 		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xEC); sc.push_back(0x60);
 
-		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xCB); // mov rbx, rcx
+		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0xCB);
 
-		// reg params
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x4B); sc.push_back(0x00); // mov rcx, [rbx]
-		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x53); sc.push_back(0x08); // mov rdx, [rbx+8]
-		sc.push_back(0x4C); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x10); // mov r8,  [rbx+0x10]
-		sc.push_back(0xF3); sc.push_back(0x0F); sc.push_back(0x10); sc.push_back(0x5B); sc.push_back(0x18); // movss xmm3, [rbx+0x18]
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x4B); sc.push_back(0x00);
+		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x53); sc.push_back(0x08);
+		sc.push_back(0x4C); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x10);
+		sc.push_back(0xF3); sc.push_back(0x0F); sc.push_back(0x10); sc.push_back(0x5B); sc.push_back(0x18);
 
-		// stack params — write to shadow+0x20 .. shadow+0x50
-		// speedMul at [rsp+0x20]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x20);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x20);
-		// duration at [rsp+0x28]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x28);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x28);
-		// flag at [rsp+0x30]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x30);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x30);
-		// playbackRate at [rsp+0x38]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x38);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x38);
-		// lockX at [rsp+0x40]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x40);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x40);
-		// lockY at [rsp+0x48]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x48);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x48);
-		// lockZ at [rsp+0x50]
 		sc.push_back(0x48); sc.push_back(0x8B); sc.push_back(0x43); sc.push_back(0x50);
 		sc.push_back(0x48); sc.push_back(0x89); sc.push_back(0x44); sc.push_back(0x24); sc.push_back(0x50);
 
-		// mov rax, <function address>
 		sc.push_back(0x48); sc.push_back(0xB8);
 		for (int i = 0; i < 8; i++)
 			sc.push_back((uint8_t)(m_AnimFuncAddr >> (i * 8)));
 
-		sc.push_back(0xFF); sc.push_back(0xD0);       // call rax
+		sc.push_back(0xFF); sc.push_back(0xD0);
 
-		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xC4); sc.push_back(0x60); // add rsp, 0x60
+		sc.push_back(0x48); sc.push_back(0x83); sc.push_back(0xC4); sc.push_back(0x60);
 
-		sc.push_back(0x5D);                           // pop rbp
-		sc.push_back(0x5B);                           // pop rbx
-		sc.push_back(0xC3);                           // ret
+		sc.push_back(0x5D);
+		sc.push_back(0x5B);
+		sc.push_back(0xC3);
 
 		uint64_t cave = FrameWork::Memory::CreateCodeCave(sc.size());
 		if (!cave || !FrameWork::Memory::WriteBytes(cave, sc))
@@ -2175,18 +2130,14 @@ namespace Cheat
 		static const char animDict[] = "melee@unarmed@streamed_core";
 		static const char animName[] = "action_bat";
 
-		// Write strings
 		FrameWork::Memory::WriteProcessMemoryImpl(dictStrOff, (LPVOID)animDict, sizeof(animDict));
 		FrameWork::Memory::WriteProcessMemoryImpl(nameStrOff, (LPVOID)animName, sizeof(animName));
 
-		// Write absolute string pointers
 		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x08, &dictStrOff, 8);
 		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x10, &nameStrOff, 8);
 
-		// Write ped pointer
 		FrameWork::Memory::WriteProcessMemoryImpl(params + 0x00, &ped, 8);
 
-		// Write 8-byte values for all stack params
 		uint64_t speed64 = 0; *(float*)&speed64 = 8.0f;
 		uint64_t speedMul64 = 0; *(float*)&speedMul64 = -8.0f;
 		uint64_t duration64 = (uint64_t)(int64_t)(-1);
@@ -2215,4 +2166,5 @@ namespace Cheat
 			CloseHandle(hThread);
 		}
 	}
+}
 
