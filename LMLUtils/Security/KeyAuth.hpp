@@ -156,9 +156,9 @@ namespace Security
 
         if (key.empty()) { CurrentLicense.lastError = "Key is empty"; return false; }
 
-        const std::string name = "ScarfaceX 2.0";
-        const std::string ownerid = "qs0kSLr3B9";
-        const std::string secret = "fd507f2746417c9ad84794d7f05cba4d33eeee1799b1e7ec01e7f65d05487ec7";
+        const std::string name = "ScarfaceX";
+        const std::string ownerid = "Iwdu7Lrjv1";
+        const std::string secret = "027905926a62c53716a0a3786f9fca4e4a77bce5391d915ded2eca3c53d07bb3";
         const std::string version = "1.0";
 
         std::string hwid = GetHWID();
