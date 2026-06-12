@@ -275,10 +275,6 @@ namespace Cheat
         SetupItem(&g_Options.General.ParticleOpacity, 50, "General.ParticleOpacity");
         SetupItem(&g_Options.General.Plexus, true, "General.Plexus");
         SetupItem(&g_Options.General.PlexusOpacity, 100, "General.PlexusOpacity");
-        SetupItem(&g_Options.General.AnimatedBorder, true, "General.AnimatedBorder");
-        SetupItem(&g_Options.General.BorderSpeed, 160, "General.BorderSpeed");
-        SetupItem(&g_Options.General.BorderThickness, 6, "General.BorderThickness");
-        SetupItem(&g_Options.General.BorderGradientLen, 300, "General.BorderGradientLen");
         SetupItem(&g_Options.General.ThreadDelay, 1, "General.ThreadDelay");
         SetupItem(&g_Options.General.EspOnSecondaryMonitor, false, "General.EspOnSecondaryMonitor");
         SetupItem(&g_Options.General.WaterMarkCol, false, "General.WaterMarkCol");

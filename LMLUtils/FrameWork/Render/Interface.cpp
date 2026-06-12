@@ -400,76 +400,6 @@ namespace FrameWork
 		}
 	}
 
-	// ── Animated White Comet Border ─────────────────────────────────────────
-	static ImVec2 PerimToPoint(ImVec2 pos, ImVec2 size, float perim)
-	{
-		const float w = size.x, h = size.y;
-		const float perimTotal = 2.f * (w + h);
-		float p = fmod(perim, perimTotal);
-		if (p < 0.f) p += perimTotal;
-
-		if (p < w)           return ImVec2(pos.x + p, pos.y);
-		p -= w;
-		if (p < h)           return ImVec2(pos.x + w, pos.y + p);
-		p -= h;
-		if (p < w)           return ImVec2(pos.x + w - p, pos.y + h);
-		p -= w;
-		                     return ImVec2(pos.x, pos.y + h - p);
-	}
-
-	static void RenderAnimatedBorder(ImDrawList* dl, ImVec2 pos, ImVec2 size)
-	{
-		const float thick = (float)g_Options.General.BorderThickness;
-
-		// Expand clip rect so the glow is never cut off at window edges
-		const float glowRadius = thick * 3.0f;
-		dl->PushClipRect(ImVec2(pos.x - glowRadius, pos.y - glowRadius),
-			ImVec2(pos.x + size.x + glowRadius, pos.y + size.y + glowRadius), false);
-
-		// Tiny nudge to centre the line exactly on the window perimeter
-		const float align = thick * 0.5f;
-		pos.x += align;  pos.y += align;
-		size.x -= align * 2.f;  size.y -= align * 2.f;
-
-		const float w = size.x, h = size.y;
-		const float perimTotal = 2.f * (w + h);
-
-		const float speed   = (float)g_Options.General.BorderSpeed;
-		const float tailLen = (float)g_Options.General.BorderGradientLen;
-
-		const float headPerim = fmod(ImGui::GetTime() * speed, perimTotal);
-
-		const float segStep = 3.f;
-		const int   nSeg    = (int)(tailLen / segStep);
-
-		// Glow multi-pass: wide/transparent → narrow/solid
-		const float glowThick[3] = { thick * 3.0f, thick * 1.8f, thick };
-		const float glowAlpha[3] = { 0.15f, 0.4f, 1.0f };
-
-		for (int i = 0; i < nSeg; i++)
-		{
-			float dist = (i + 0.5f) * segStep;
-			if (dist > tailLen) break;
-
-			float intensity = 1.f - (dist / tailLen);
-
-			float p0 = headPerim -  i      * segStep;
-			float p1 = headPerim - (i + 1) * segStep;
-
-			ImVec2 a = PerimToPoint(pos, size, p0);
-			ImVec2 b = PerimToPoint(pos, size, p1);
-
-			for (int pass = 0; pass < 3; pass++)
-			{
-				int alpha = (int)(intensity * glowAlpha[pass] * 255.f);
-				if (alpha <= 0) continue;
-				dl->AddLine(a, b, IM_COL32(255, 255, 255, alpha), glowThick[pass]);
-			}
-		}
-
-		dl->PopClipRect();
-	}
-
 	void Interface::RenderGui()
 	{
 		static std::string s_DiscordName = FrameWork::Misc::GetDiscordUsername();
@@ -579,7 +509,7 @@ namespace FrameWork
 						{
 							if (SidebarLogo)
 							{
-								float logoW = 150.f;
+								float logoW = 200.f;
 								float logoH = logoW;
 								float logoX = (wSz.x - logoW) * .5f;
 								dl->AddImage(SidebarLogo, wPos + ImVec2(logoX, 16.f), wPos + ImVec2(logoX + logoW, 16.f + logoH));
@@ -659,7 +589,7 @@ namespace FrameWork
 				{
 					if (SidebarLogo)
 					{
-						float logoW = 150.f;
+						float logoW = 200.f;
 						float logoH = logoW;
 						float logoX = (wSz.x - logoW) * .5f;
 						dl->AddImage(SidebarLogo, wPos + ImVec2(logoX, 16.f), wPos + ImVec2(logoX + logoW, 16.f + logoH));
@@ -872,7 +802,7 @@ namespace FrameWork
 
 			if (SidebarLogo)
 			{
-				float logoW = 150.f;
+				float logoW = 200.f;
 				float logoH = logoW;
 				float logoX = (kSidebarW - kSidebarPad - logoW) * 0.5f;
 				float logoY = (kContentTop + 200.f - logoH) * 0.5f;
@@ -1268,9 +1198,7 @@ namespace FrameWork
 							if (FilterPass("Snap Lines")) { ImGui::Checkbox(_T("Snap Lines"), &g_Options.Visuals.ESP.Vehicles.SnapLines); }
 							if (FilterPass("Lock Status Icon")) { ImGui::Checkbox(_T("Lock Status Icon"), &g_Options.Visuals.ESP.Vehicles.LockStatus); }
 
-							ImGui::Separator();
-
-							ImGui::Separator();
+							ImGui::SeparatorText(_T("Color Vehicle"));
 
 							if (FilterPass("Text Color")) { ImGui::ColorEdit4(_T("Text Color"), g_Options.Visuals.ESP.Vehicles.TextColor, ImGuiColorEditFlags_AlphaBar); }
 							if (FilterPass("Name Color")) { ImGui::ColorEdit4(_T("Name Color"), g_Options.Visuals.ESP.Vehicles.VehicleNameColor, ImGuiColorEditFlags_AlphaBar); }
@@ -2093,13 +2021,7 @@ namespace FrameWork
 							if (FilterPass("Plexus")) { ImGui::Checkbox(_T("Plexus"), &g_Options.General.Plexus); }
 							if (g_Options.General.Plexus)
 								if (FilterPass("Plexus Opacity")) { ImGui::SliderInt(_T("Plexus Opacity"), &g_Options.General.PlexusOpacity, 0, 100, XorStr("%d%%")); }
-							if (FilterPass("Animated Border")) { ImGui::Checkbox(_T("Animated Border"), &g_Options.General.AnimatedBorder); }
-							if (g_Options.General.AnimatedBorder)
-							{
-								if (FilterPass("Border Speed")) { ImGui::SliderInt(_T("Border Speed"), &g_Options.General.BorderSpeed, 10, 300, XorStr("%d")); }
-								if (FilterPass("Border Thickness")) { ImGui::SliderInt(_T("Border Thickness"), &g_Options.General.BorderThickness, 1, 10, XorStr("%d")); }
-								if (FilterPass("Border Gradient")) { ImGui::SliderInt(_T("Border Gradient"), &g_Options.General.BorderGradientLen, 50, 600, XorStr("%d")); }
-							}
+
 							if (FilterPass("Second Monitor")) { ImGui::Checkbox(_T("Second Monitor"), &g_Options.General.EspOnSecondaryMonitor); ImGui::SetItemTooltip("Move o overlay ESP para o segundo monitor"); }
 							if (FilterPass("Watermark")) { ImGui::Checkbox(_T("Watermark"), &g_Options.General.WaterMark); }
 							if (g_Options.General.WaterMark)
@@ -2217,10 +2139,7 @@ namespace FrameWork
 			ImGui::PopStyleVar();
 			ImGui::PopStyleVar();
 
-			if (g_Options.General.AnimatedBorder)
-				RenderAnimatedBorder(DrawList, Pos, Size);
-			else
-				DrawList->AddRect(Pos, Pos + Size, IM_COL32(255, 255, 255, 255), ImGui::GetStyle().WindowRounding);
+			DrawList->AddRect(Pos, Pos + Size, IM_COL32(255, 255, 255, 255), ImGui::GetStyle().WindowRounding);
 		}
 		ImGui::End();
 
