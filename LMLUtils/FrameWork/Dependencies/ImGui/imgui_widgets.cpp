@@ -1637,7 +1637,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
 
     // Pill background
     ImVec4 bgA(30 / 255.f, 30 / 255.f, 30 / 255.f, 1.f);
-    ImVec4 bgB(255 / 255.f, 0 / 255.f, 51 / 255.f, 1.f);
+    ImVec4 bgB(255 / 255.f, 255 / 255.f, 255 / 255.f, 1.f);
     ImVec4 bgLerp = ImLerp(bgA, bgB, Value->second.a);
     window->DrawList->AddRectFilled(toggleBb.Min, toggleBb.Max, GetColorU32(bgLerp), toggleH * 0.5f);
 
