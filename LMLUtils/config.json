@@ -832,7 +832,7 @@
     {
         "name": "General.PlexusOpacity",
         "type": "int",
-        "value": 50
+        "value": 100
     },
     {
         "name": "General.ThreadDelay",
