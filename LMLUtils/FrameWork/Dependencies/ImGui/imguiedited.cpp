@@ -604,7 +604,7 @@ namespace edited
         static std::map<ImGuiID, button_state> anim;
         button_state& state = anim[id];
 
-        state.background = ImLerp(state.background, pressed ? c::accent : ImVec4(60 / 255.f, 60 / 255.f, 60 / 255.f, 120 / 255.f), g.IO.DeltaTime * 6.f);
+        state.background = ImLerp(state.background, c::accent, g.IO.DeltaTime * 6.f);
 
         GetWindowDrawList()->AddRectFilled(bb.Min, bb.Max, GetColorU32(state.background), g.Style.FrameRounding);
 
