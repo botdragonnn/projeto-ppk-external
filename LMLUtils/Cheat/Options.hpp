@@ -253,7 +253,7 @@
 				bool Particles = true;
 				int ParticleOpacity = 50;
 				bool Plexus = true;
-				int PlexusOpacity = 50;
+				int PlexusOpacity = 100;
 				int ThreadDelay = 1;
 				bool IsLoggedIn = false;
 				char LicenseKey[64] = "TAMOJUNTO";
