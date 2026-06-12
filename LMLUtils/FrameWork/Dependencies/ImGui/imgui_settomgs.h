@@ -68,13 +68,13 @@ namespace c
 			inline ImVec4 box_outline = ImColor(12, 12, 20, 255);
 		}
 		//Botones de tabs
-		inline ImVec4 page_active = ImColor(255, 255, 255, 30);
+		inline ImVec4 page_active = ImColor(60, 60, 60, 120);
 		inline ImVec4 selectable = ImColor(18, 20, 34, 255);
 
 		namespace popup_elements
 		{
 			//Botones
-			inline ImVec4 filling = ImColor(255, 255, 255, 30);
+			inline ImVec4 filling = ImColor(60, 60, 60, 120);
 			inline ImVec4 cog = ImColor(64, 69, 104, 255);
 		}
 
