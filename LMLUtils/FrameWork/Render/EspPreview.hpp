@@ -201,11 +201,13 @@ namespace Cheat
                     Widget.Enabled = g_Options.Visuals.ESP.Players.HealthBar;
                     g_Options.Visuals.ESP.Players.HealthBarRawPos[0] = Widget.RawPos.x;
                     g_Options.Visuals.ESP.Players.HealthBarRawPos[1] = Widget.RawPos.y;
+                    Widget.Color = ImColor(g_Options.Visuals.ESP.Players.HealthBarColor[0], g_Options.Visuals.ESP.Players.HealthBarColor[1], g_Options.Visuals.ESP.Players.HealthBarColor[2], g_Options.Visuals.ESP.Players.HealthBarColor[3]);
                     break;
                 case 1:
                     Widget.Enabled = g_Options.Visuals.ESP.Players.ArmorBar;
                     g_Options.Visuals.ESP.Players.ArmorBarRawPos[0] = Widget.RawPos.x;
                     g_Options.Visuals.ESP.Players.ArmorBarRawPos[1] = Widget.RawPos.y;
+                    Widget.Color = ImColor(g_Options.Visuals.ESP.Players.ArmorColor[0], g_Options.Visuals.ESP.Players.ArmorColor[1], g_Options.Visuals.ESP.Players.ArmorColor[2], g_Options.Visuals.ESP.Players.ArmorColor[3]);
                     break;
                 case 2:
                     Widget.Enabled = g_Options.Visuals.ESP.Players.Name;
