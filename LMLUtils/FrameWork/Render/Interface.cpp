@@ -264,7 +264,7 @@ namespace FrameWork
 		Style->ItemInnerSpacing = ImVec2(10, 10);
 		Style->ScrollbarSize = 8;
 
-		ImVec4 accentColor = ImVec4(255.0f / 255.0f, 0.0f / 255.0f, 51.0f / 255.0f, 1.00f);
+		ImVec4 accentColor = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 		g_Options.General.PrimaryColor[0] = accentColor.x;
 		g_Options.General.PrimaryColor[1] = accentColor.y;
 		g_Options.General.PrimaryColor[2] = accentColor.z;
@@ -682,7 +682,7 @@ namespace FrameWork
 					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 255, 255, 200).Value);
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
 					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 40, 80, 230).Value);
-				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor(200, 0, 40, 255).Value);
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor(200, 200, 200, 255).Value);
 				ImGui::PushStyleColor(ImGuiCol_Text, ImColor(255, 255, 255, 255).Value);
 
 				const char* lbl = XorStr("LOGIN");
@@ -1899,7 +1899,7 @@ namespace FrameWork
 								else if (g_Options.General.DaysLeft == 0)
 									ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), _T("EXPIRED"));
 								ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
-								ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.25f, 0.05f, 0.05f, 1.0f));
+								ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.25f, 0.25f, 0.25f, 1.0f));
 								if (ImGui::Button(_T("Logout")))
 								{
 									DeleteLicenseKey();
