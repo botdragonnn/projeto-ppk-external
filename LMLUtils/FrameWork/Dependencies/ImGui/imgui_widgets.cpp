@@ -1475,8 +1475,7 @@ bool ImGui::ScrollbarEx(const ImRect& bb_frame, ImGuiID id, ImGuiAxis axis, ImS6
         grab_rect = ImRect(bb.Min.x, ImLerp(bb.Min.y, bb.Max.y, grab_v_norm), bb.Max.x, ImLerp(bb.Min.y, bb.Max.y, grab_v_norm) + grab_h_pixels);
 
     if (axis == ImGuiAxis_Y)
-        // SUBSTITUIR: ImColor(23, 24, 25, (int)(GetStyle().Alpha * 155))
-        window->DrawList->AddRectFilledMultiColor(grab_rect.Min, grab_rect.Max, ImColor(75, 70, 175, 0), ImColor(75, 70, 175, 0), GetWidgetBackgroundColor((int)(GetStyle().Alpha * 155)), GetWidgetBackgroundColor((int)(GetStyle().Alpha * 155)), 5);
+        window->DrawList->AddRectFilledMultiColor(grab_rect.Min, grab_rect.Max, ImColor(255, 255, 255, 0), ImColor(255, 255, 255, 0), ImColor(200, 200, 200, 180), ImColor(200, 200, 200, 180), 5);
     return held;
 }
 
@@ -1637,7 +1636,7 @@ bool ImGui::Checkbox(const char* label, bool* v)
 
     // Pill background
     ImVec4 bgA(30 / 255.f, 30 / 255.f, 30 / 255.f, 1.f);
-    ImVec4 bgB(255 / 255.f, 255 / 255.f, 255 / 255.f, 1.f);
+    ImVec4 bgB(180 / 255.f, 180 / 255.f, 180 / 255.f, 1.f);
     ImVec4 bgLerp = ImLerp(bgA, bgB, Value->second.a);
     window->DrawList->AddRectFilled(toggleBb.Min, toggleBb.Max, GetColorU32(bgLerp), toggleH * 0.5f);
 
