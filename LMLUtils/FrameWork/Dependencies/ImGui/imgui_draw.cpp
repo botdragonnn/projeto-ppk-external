@@ -753,8 +753,8 @@ void ImDrawList::AddPolyline(const ImVec2* points, const int points_count, ImU32
         const float AA_SIZE = _FringeScale;
         const ImU32 col_trans = col & ~IM_COL32_A_MASK;
 
-        // Thicknesses <1.0 should behave like thickness 1.0
-        thickness = ImMax(thickness, 1.0f);
+        // Allow thicknesses <1.0 to produce thinner lines
+        thickness = ImMax(thickness, _FringeScale * 0.1f);
         const int integer_thickness = (int)thickness;
         const float fractional_thickness = thickness - integer_thickness;
 
@@ -800,7 +800,7 @@ void ImDrawList::AddPolyline(const ImVec2* points, const int points_count, ImU32
             //   (see ImFontAtlasBuildRenderLinesTexData() function), and so alternate values won't work without changes to that code.
             // - In the non texture-based paths, we would allow AA_SIZE to potentially be != 1.0f with a patch (e.g. fringe_scale patch to
             //   allow scaling geometry while preserving one-screen-pixel AA fringe).
-            const float half_draw_size = use_texture ? ((thickness * 0.5f) + 1) : AA_SIZE;
+            const float half_draw_size = use_texture ? ((thickness * 0.5f) + 1) : AA_SIZE * thickness;
 
             // If line is not closed, the first and last points need to be generated differently as there are no normals to blend
             if (!closed)

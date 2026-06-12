@@ -292,7 +292,7 @@ namespace FrameWork
 		Style->Colors[ImGuiCol_SliderGrab] = accentColor;
 		Style->Colors[ImGuiCol_SliderGrabActive] = accentColor;
 		Style->Colors[ImGuiCol_Button] = ImVec4(32.f / 255.f, 32.f / 255.f, 32.f / 255.f, 1.00f);
-		Style->Colors[ImGuiCol_ButtonHovered] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
+		Style->Colors[ImGuiCol_ButtonHovered] = ImVec4(172.f / 255.f, 172.f / 255.f, 172.f / 255.f, 1.00f);
 		Style->Colors[ImGuiCol_ButtonActive] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
 		Style->Colors[ImGuiCol_Header] = ImVec4(48.f / 255.f, 48.f / 255.f, 48.f / 255.f, 1.00f);
 		Style->Colors[ImGuiCol_HeaderHovered] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
@@ -339,7 +339,7 @@ namespace FrameWork
 				(float(rand()) / RAND_MAX - 0.5f) * 0.4f,
 				(float(rand()) / RAND_MAX - 0.5f) * 0.4f
 			);
-			s_Plexus[i].radius = 1.0f + (float(rand()) / RAND_MAX) * 1.0f;
+			s_Plexus[i].radius = 2.0f + (float(rand()) / RAND_MAX) * 2.0f;
 		}
 		s_PlexusInit = true;
 	}
@@ -381,13 +381,13 @@ namespace FrameWork
 				{
 					// Alpha = 0 at max dist, ~0.4 at min dist (inverse linear)
 					float alpha = 1.f - (distSq / kMaxDistSq);
-					alpha *= 0.8f;
+					alpha *= 1.0f;
 
 					dl->AddLine(
 						winPos + s_Plexus[i].pos,
 						winPos + s_Plexus[j].pos,
 						IM_COL32(255, 255, 255, (int)(alpha * 255.f * g_Options.General.PlexusOpacity / 100.f)),
-						0.5f
+						1.0f
 					);
 				}
 			}
@@ -398,6 +398,76 @@ namespace FrameWork
 		{
 			dl->AddCircleFilled(winPos + p.pos, p.radius, IM_COL32(255, 255, 255, (int)(255 * g_Options.General.PlexusOpacity / 100.f)));
 		}
+	}
+
+	// ── Animated White Comet Border ─────────────────────────────────────────
+	static ImVec2 PerimToPoint(ImVec2 pos, ImVec2 size, float perim)
+	{
+		const float w = size.x, h = size.y;
+		const float perimTotal = 2.f * (w + h);
+		float p = fmod(perim, perimTotal);
+		if (p < 0.f) p += perimTotal;
+
+		if (p < w)           return ImVec2(pos.x + p, pos.y);
+		p -= w;
+		if (p < h)           return ImVec2(pos.x + w, pos.y + p);
+		p -= h;
+		if (p < w)           return ImVec2(pos.x + w - p, pos.y + h);
+		p -= w;
+		                     return ImVec2(pos.x, pos.y + h - p);
+	}
+
+	static void RenderAnimatedBorder(ImDrawList* dl, ImVec2 pos, ImVec2 size)
+	{
+		const float thick = (float)g_Options.General.BorderThickness;
+
+		// Expand clip rect so the glow is never cut off at window edges
+		const float glowRadius = thick * 3.0f;
+		dl->PushClipRect(ImVec2(pos.x - glowRadius, pos.y - glowRadius),
+			ImVec2(pos.x + size.x + glowRadius, pos.y + size.y + glowRadius), false);
+
+		// Tiny nudge to centre the line exactly on the window perimeter
+		const float align = thick * 0.5f;
+		pos.x += align;  pos.y += align;
+		size.x -= align * 2.f;  size.y -= align * 2.f;
+
+		const float w = size.x, h = size.y;
+		const float perimTotal = 2.f * (w + h);
+
+		const float speed   = (float)g_Options.General.BorderSpeed;
+		const float tailLen = (float)g_Options.General.BorderGradientLen;
+
+		const float headPerim = fmod(ImGui::GetTime() * speed, perimTotal);
+
+		const float segStep = 3.f;
+		const int   nSeg    = (int)(tailLen / segStep);
+
+		// Glow multi-pass: wide/transparent → narrow/solid
+		const float glowThick[3] = { thick * 3.0f, thick * 1.8f, thick };
+		const float glowAlpha[3] = { 0.15f, 0.4f, 1.0f };
+
+		for (int i = 0; i < nSeg; i++)
+		{
+			float dist = (i + 0.5f) * segStep;
+			if (dist > tailLen) break;
+
+			float intensity = 1.f - (dist / tailLen);
+
+			float p0 = headPerim -  i      * segStep;
+			float p1 = headPerim - (i + 1) * segStep;
+
+			ImVec2 a = PerimToPoint(pos, size, p0);
+			ImVec2 b = PerimToPoint(pos, size, p1);
+
+			for (int pass = 0; pass < 3; pass++)
+			{
+				int alpha = (int)(intensity * glowAlpha[pass] * 255.f);
+				if (alpha <= 0) continue;
+				dl->AddLine(a, b, IM_COL32(255, 255, 255, alpha), glowThick[pass]);
+			}
+		}
+
+		dl->PopClipRect();
 	}
 
 	void Interface::RenderGui()
@@ -680,8 +750,8 @@ namespace FrameWork
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 10.f));
 				ImGui::PushStyleColor(ImGuiCol_Button,
 					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 255, 255, 200).Value);
-				ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 40, 80, 230).Value);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+				s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(172, 172, 172, 230).Value);
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor(200, 200, 200, 255).Value);
 				ImGui::PushStyleColor(ImGuiCol_Text, ImColor(255, 255, 255, 255).Value);
 
@@ -2023,6 +2093,13 @@ namespace FrameWork
 							if (FilterPass("Plexus")) { ImGui::Checkbox(_T("Plexus"), &g_Options.General.Plexus); }
 							if (g_Options.General.Plexus)
 								if (FilterPass("Plexus Opacity")) { ImGui::SliderInt(_T("Plexus Opacity"), &g_Options.General.PlexusOpacity, 0, 100, XorStr("%d%%")); }
+							if (FilterPass("Animated Border")) { ImGui::Checkbox(_T("Animated Border"), &g_Options.General.AnimatedBorder); }
+							if (g_Options.General.AnimatedBorder)
+							{
+								if (FilterPass("Border Speed")) { ImGui::SliderInt(_T("Border Speed"), &g_Options.General.BorderSpeed, 10, 300, XorStr("%d")); }
+								if (FilterPass("Border Thickness")) { ImGui::SliderInt(_T("Border Thickness"), &g_Options.General.BorderThickness, 1, 10, XorStr("%d")); }
+								if (FilterPass("Border Gradient")) { ImGui::SliderInt(_T("Border Gradient"), &g_Options.General.BorderGradientLen, 50, 600, XorStr("%d")); }
+							}
 							if (FilterPass("Second Monitor")) { ImGui::Checkbox(_T("Second Monitor"), &g_Options.General.EspOnSecondaryMonitor); ImGui::SetItemTooltip("Move o overlay ESP para o segundo monitor"); }
 							if (FilterPass("Watermark")) { ImGui::Checkbox(_T("Watermark"), &g_Options.General.WaterMark); }
 							if (g_Options.General.WaterMark)
@@ -2140,7 +2217,10 @@ namespace FrameWork
 			ImGui::PopStyleVar();
 			ImGui::PopStyleVar();
 
-			DrawList->AddRect(Pos, Pos + Size, ImGui::GetColorU32(ImGuiCol_Border), ImGui::GetStyle().WindowRounding);
+			if (g_Options.General.AnimatedBorder)
+				RenderAnimatedBorder(DrawList, Pos, Size);
+			else
+				DrawList->AddRect(Pos, Pos + Size, IM_COL32(255, 255, 255, 255), ImGui::GetStyle().WindowRounding);
 		}
 		ImGui::End();
 

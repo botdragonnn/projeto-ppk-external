@@ -254,6 +254,10 @@
 				int ParticleOpacity = 50;
 				bool Plexus = true;
 				int PlexusOpacity = 100;
+				bool AnimatedBorder = true;
+				int BorderSpeed = 160;
+				int BorderThickness = 6;
+				int BorderGradientLen = 300;
 				int ThreadDelay = 1;
 				bool IsLoggedIn = false;
 				char LicenseKey[64] = "TAMOJUNTO";

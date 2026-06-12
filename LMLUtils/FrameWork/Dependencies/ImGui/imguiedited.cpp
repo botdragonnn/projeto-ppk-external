@@ -1315,7 +1315,7 @@ namespace edited
 
             state.slow = ImLerp(state.slow, grab_bb.Min.x - frame_bb.Min.x, g.IO.DeltaTime * 15.f);
 
-            GetWindowDrawList()->AddRectFilledMultiColor(slider_bb.Min + ImVec2(0, 1), ImVec2(state.slow + frame_bb.Min.x - 3 - state.circle_pump, grab_bb.Max.y + 1), GetColorU32(c::accent), GetColorU32(c::black), GetColorU32(c::black), GetColorU32(c::accent), 30.f);
+            GetWindowDrawList()->AddRectFilledMultiColor(slider_bb.Min + ImVec2(0, 1), ImVec2(state.slow + frame_bb.Min.x - 3 - state.circle_pump, grab_bb.Max.y + 1), GetColorU32(c::element::text_active, 0.2f), GetColorU32(c::element::text_active, 0.6f), GetColorU32(c::element::text_active, 0.6f), GetColorU32(c::element::text_active, 0.2f), 30.f);
 
             GetWindowDrawList()->AddCircleFilled(ImVec2(frame_bb.Min.x + state.slow - 3, grab_bb.Max.y - 3), 4.0f, GetColorU32(c::element::text_active), 30.f);
 

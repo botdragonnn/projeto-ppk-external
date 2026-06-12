@@ -748,7 +748,7 @@ bool ImGui::ButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlags
         const float h = drawBb.GetHeight() * anim.fillRise;
         const ImVec2 clipMin(drawBb.Min.x, drawBb.Max.y - h);
         window->DrawList->PushClipRect(clipMin, drawBb.Max, true);
-        window->DrawList->AddRectFilled(drawBb.Min, drawBb.Max, IM_COL32(255, 255, 255, (int)(alpha * 242)), g.Style.FrameRounding);
+        window->DrawList->AddRectFilled(drawBb.Min, drawBb.Max, IM_COL32(172, 172, 172, (int)(alpha * 242)), g.Style.FrameRounding);
         window->DrawList->PopClipRect();
     }
 

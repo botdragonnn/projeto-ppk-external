@@ -113,7 +113,7 @@ namespace Cheat
                 ImVec2 headCenter(iBox_X + iBox_Width * 0.5f, iBox_Y + iBox_Height * 0.13f);
                 float headR = iBox_Height * 0.06f;
                 ImColor headCol = boxOpts.RGB ? RgbCol() : ImColor(boxOpts.HeadCircleColor[0], boxOpts.HeadCircleColor[1], boxOpts.HeadCircleColor[2]);
-                ImGui::GetWindowDrawList()->AddCircle(headCenter, headR, headCol, 24, 0.5f);
+                ImGui::GetWindowDrawList()->AddCircle(headCenter, headR, headCol, 24, 0.8f);
             }
 
             // ── Skeleton ──
@@ -133,13 +133,13 @@ namespace Cheat
                 ImVec2 pelvis(cx, cy + h * 0.52f);
                 ImVec2 lFoot(cx - w * 0.2f, cy + h);
                 ImVec2 rFoot(cx + w * 0.2f, cy + h);
-                DL->AddLine(neck, lShld, skelCol, 0.5f);
-                DL->AddLine(neck, rShld, skelCol, 0.5f);
-                DL->AddLine(lShld, lHand, skelCol, 0.5f);
-                DL->AddLine(rShld, rHand, skelCol, 0.5f);
-                DL->AddLine(neck, pelvis, skelCol, 0.5f);
-                DL->AddLine(pelvis, lFoot, skelCol, 0.5f);
-                DL->AddLine(pelvis, rFoot, skelCol, 0.5f);
+                DL->AddLine(neck, lShld, skelCol, 0.8f);
+                DL->AddLine(neck, rShld, skelCol, 0.8f);
+                DL->AddLine(lShld, lHand, skelCol, 0.8f);
+                DL->AddLine(rShld, rHand, skelCol, 0.8f);
+                DL->AddLine(neck, pelvis, skelCol, 0.8f);
+                DL->AddLine(pelvis, lFoot, skelCol, 0.8f);
+                DL->AddLine(pelvis, rFoot, skelCol, 0.8f);
             }
 
             // ── Snap Lines ──
@@ -148,7 +148,7 @@ namespace Cheat
                 ImVec2 bottomCenter(iBox_X + iBox_Width * 0.5f, iBox_Y + iBox_Height + 5.f);
                 ImVec2 bottomEnd(iBox_X + iBox_Width * 0.5f, iBox_Y + iBox_Height + 50.f);
                 ImColor snapCol = boxOpts.RGB ? RgbCol() : ImColor(boxOpts.SnapLinesColor[0], boxOpts.SnapLinesColor[1], boxOpts.SnapLinesColor[2]);
-                ImGui::GetWindowDrawList()->AddLine(bottomCenter, bottomEnd, snapCol, 0.5f);
+                ImGui::GetWindowDrawList()->AddLine(bottomCenter, bottomEnd, snapCol, 0.8f);
             }
 
             // RESETAR OS PADDINGS ANTES DE PROCESSAR
