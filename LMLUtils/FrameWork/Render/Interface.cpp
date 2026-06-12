@@ -381,7 +381,7 @@ namespace FrameWork
 				{
 					// Alpha = 0 at max dist, ~0.4 at min dist (inverse linear)
 					float alpha = 1.f - (distSq / kMaxDistSq);
-					alpha *= 0.3f;
+					alpha *= 0.8f;
 
 					dl->AddLine(
 						winPos + s_Plexus[i].pos,
@@ -396,7 +396,7 @@ namespace FrameWork
 		// Draw particle dots (white)
 		for (auto& p : s_Plexus)
 		{
-			dl->AddCircleFilled(winPos + p.pos, p.radius, IM_COL32(255, 255, 255, (int)(160 * g_Options.General.PlexusOpacity / 100.f)));
+			dl->AddCircleFilled(winPos + p.pos, p.radius, IM_COL32(255, 255, 255, (int)(255 * g_Options.General.PlexusOpacity / 100.f)));
 		}
 	}
 
