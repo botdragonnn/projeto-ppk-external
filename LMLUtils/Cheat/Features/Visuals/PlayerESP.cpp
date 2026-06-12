@@ -179,7 +179,7 @@ namespace Cheat
 						if (circleRadius <= 10)
 							circleRadius = (int)(Height / 20.f);
 						ImColor headCircleColor = opts.RGB ? RgbColor() : FrameWork::Misc::Float4ToImColor(opts.HeadCircleColor);
-						DrawList->AddCircle(headScreen, (float)circleRadius, headCircleColor, 48, 1.5f);
+						DrawList->AddCircle(headScreen, (float)circleRadius, headCircleColor, 48, 0.5f);
 					}
 				}
 			}
@@ -238,28 +238,28 @@ namespace Cheat
 						(Current.StaticInfo.bIsFriend ? FrameWork::Misc::Float4ToImColor(opts.FriendSkeletonColor)
 							: FrameWork::Misc::Float4ToImColor(opts.SkeletonColor));
 
-					DrawList->AddLine(Neck, RightClavicle, Color, 1.f);
-					DrawList->AddLine(Neck, LeftClavicle, Color, 1.f);
+DrawList->AddLine(Neck, RightClavicle, Color, 0.5f);
+				DrawList->AddLine(Neck, LeftClavicle, Color, 0.5f);
 
-					DrawList->AddLine(RightClavicle, RightUperarm, Color, 1.f);
-					DrawList->AddLine(LeftClavicle, LeftUperarm, Color, 1.f);
+					DrawList->AddLine(RightClavicle, RightUperarm, Color, 0.5f);
+					DrawList->AddLine(LeftClavicle, LeftUperarm, Color, 0.5f);
 
-					DrawList->AddLine(RightUperarm, RightFormArm, Color, 1.f);
-					DrawList->AddLine(LeftUperarm, LeftFormArm, Color, 1.f);
+					DrawList->AddLine(RightUperarm, RightFormArm, Color, 0.5f);
+					DrawList->AddLine(LeftUperarm, LeftFormArm, Color, 0.5f);
 
-					DrawList->AddLine(RightFormArm, RightHand, Color, 1.f);
-					DrawList->AddLine(LeftFormArm, LeftHand, Color, 1.f);
+					DrawList->AddLine(RightFormArm, RightHand, Color, 0.5f);
+					DrawList->AddLine(LeftFormArm, LeftHand, Color, 0.5f);
 
-					DrawList->AddLine(Neck, Pelvis, Color, 1.f);
+					DrawList->AddLine(Neck, Pelvis, Color, 0.5f);
 
-					DrawList->AddLine(Pelvis, LeftThigh, Color, 1.f);
-					DrawList->AddLine(Pelvis, RightThigh, Color, 1.f);
+					DrawList->AddLine(Pelvis, LeftThigh, Color, 0.5f);
+					DrawList->AddLine(Pelvis, RightThigh, Color, 0.5f);
 
-					DrawList->AddLine(LeftThigh, LeftCalf, Color, 1.f);
-					DrawList->AddLine(RightThigh, RightCalf, Color, 1.f);
+					DrawList->AddLine(LeftThigh, LeftCalf, Color, 0.5f);
+					DrawList->AddLine(RightThigh, RightCalf, Color, 0.5f);
 
-					DrawList->AddLine(LeftCalf, LeftFoot, Color, 1.f);
-					DrawList->AddLine(RightCalf, RightFoot, Color, 1.f);
+					DrawList->AddLine(LeftCalf, LeftFoot, Color, 0.5f);
+					DrawList->AddLine(RightCalf, RightFoot, Color, 0.5f);
 				} while (false);
 			}
 
