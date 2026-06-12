@@ -293,10 +293,10 @@ namespace FrameWork
 		Style->Colors[ImGuiCol_SliderGrabActive] = accentColor;
 		Style->Colors[ImGuiCol_Button] = ImVec4(32.f / 255.f, 32.f / 255.f, 32.f / 255.f, 1.00f);
 		Style->Colors[ImGuiCol_ButtonHovered] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
-		Style->Colors[ImGuiCol_ButtonActive] = accentColor;
-		Style->Colors[ImGuiCol_Header] = accentColor;
-		Style->Colors[ImGuiCol_HeaderHovered] = accentColor;
-		Style->Colors[ImGuiCol_HeaderActive] = accentColor;
+		Style->Colors[ImGuiCol_ButtonActive] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
+		Style->Colors[ImGuiCol_Header] = ImVec4(48.f / 255.f, 48.f / 255.f, 48.f / 255.f, 1.00f);
+		Style->Colors[ImGuiCol_HeaderHovered] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
+		Style->Colors[ImGuiCol_HeaderActive] = ImVec4(80.f / 255.f, 80.f / 255.f, 80.f / 255.f, 1.00f);
 		Style->Colors[ImGuiCol_Separator] = ImVec4(64.f / 255.f, 64.f / 255.f, 64.f / 255.f, 1.00f);
 		Style->Colors[ImGuiCol_SeparatorHovered] = accentColor;
 		Style->Colors[ImGuiCol_SeparatorActive] = accentColor;
