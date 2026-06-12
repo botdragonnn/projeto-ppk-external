@@ -1282,6 +1282,7 @@ namespace FrameWork
 							if (FilterPass("Anti-Aim")) { ImGui::Checkbox(_T("Anti-Aim"), &g_Options.Misc.Exploits.LocalPlayer.AntiAimEnabled); }
 							if (g_Options.Misc.Exploits.LocalPlayer.AntiAimEnabled && FilterPass("Anti-Aim Key"))
 								{ ImGui::KeyBind(_T("Anti-Aim Key"), &g_Options.Misc.Exploits.LocalPlayer.AntiAimKey, &g_Options.Misc.Exploits.LocalPlayer.AntiAimKeyState); }
+							if (FilterPass("Unlock All Actions")) { ImGui::Checkbox(_T("Unlock All Actions"), &g_Options.Misc.Exploits.Weapon.Coronhada); }
 							if (FilterPass("Invisible")) { ImGui::Checkbox(_T("Invisible"), &g_Options.Misc.Exploits.LocalPlayer.Invisible); }
 							if (FilterPass("Noclip")) { ImGui::Checkbox(_T("Noclip"), &g_Options.Misc.Exploits.LocalPlayer.Noclip); }
 							if (g_Options.Misc.Exploits.LocalPlayer.Noclip)
@@ -1305,7 +1306,6 @@ namespace FrameWork
 							if (FilterPass("Weapon Scale")) { ImGui::Checkbox(_T("Weapon Scale"), &g_Options.Misc.Exploits.Weapon.WeaponScaleEnabled); }
 							if (g_Options.Misc.Exploits.Weapon.WeaponScaleEnabled && FilterPass("Weapon Scale Value"))
 								{ ImGui::SliderFloat(_T("Weapon Scale Value"), &g_Options.Misc.Exploits.Weapon.WeaponScale, 0.1f, 10.0f, "%.1f"); }
-							if (FilterPass("Unlock All Actions")) { ImGui::Checkbox(_T("Unlock All Actions"), &g_Options.Misc.Exploits.Weapon.Coronhada); }
 						}
 						ImGui::EndCustomChild();
 
