@@ -327,7 +327,7 @@ namespace FrameWork
 
 	static void InitPlexus(ImVec2 winSize)
 	{
-		const int count = 80;
+		const int count = 30;
 		s_Plexus.resize(count);
 		for (int i = 0; i < count; i++)
 		{
