@@ -68,20 +68,20 @@ namespace c
 			inline ImVec4 box_outline = ImColor(12, 12, 20, 255);
 		}
 		//Botones de tabs
-		inline ImVec4 page_active = ImColor(219, 50, 101, 30);
+		inline ImVec4 page_active = ImColor(255, 255, 255, 30);
 		inline ImVec4 selectable = ImColor(18, 20, 34, 255);
 
 		namespace popup_elements
 		{
 			//Botones
-			inline ImVec4 filling = ImColor(219, 50, 101, 30);
+			inline ImVec4 filling = ImColor(255, 255, 255, 30);
 			inline ImVec4 cog = ImColor(64, 69, 104, 255);
 		}
 
 		namespace notify
 		{
-			inline ImVec4 red_status = ImColor(255, 48, 47, 255);
-			inline ImVec4 blue_status = ImColor(255, 0, 51, 255);
+			inline ImVec4 red_status = ImColor(255, 255, 255, 255);
+			inline ImVec4 blue_status = ImColor(255, 255, 255, 255);
 			inline ImVec4 green_status = ImColor(74, 201, 126, 255);
 			inline ImVec4 yellow_status = ImColor(226, 111, 32, 255);
 
@@ -94,7 +94,7 @@ namespace c
 
 		inline ImVec4 filling = ImColor(25, 23, 48, 255);
 		//checkmarks desactivados
-		inline ImVec4 circle_mark = ImColor(0.1686f, 0.1176f, 0.9294f, 1.0f);
+		inline ImVec4 circle_mark = ImColor(1.0f, 1.0f, 1.0f, 1.0f);
 		inline ImVec4 text_active = ImColor(255, 255, 255, 255);
 		inline ImVec4 text_hov = ImColor(111, 115, 148, 255);
 		inline ImVec4 text = ImColor(255, 255, 255, 255);

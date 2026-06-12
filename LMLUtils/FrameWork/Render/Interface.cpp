@@ -386,7 +386,7 @@ namespace FrameWork
 					dl->AddLine(
 						winPos + s_Plexus[i].pos,
 						winPos + s_Plexus[j].pos,
-						IM_COL32(255, 0, 0, (int)(alpha * 255.f * g_Options.General.PlexusOpacity / 100.f)),
+						IM_COL32(255, 255, 255, (int)(alpha * 255.f * g_Options.General.PlexusOpacity / 100.f)),
 						0.5f
 					);
 				}
