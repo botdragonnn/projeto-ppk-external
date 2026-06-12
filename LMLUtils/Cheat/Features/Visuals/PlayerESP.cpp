@@ -72,7 +72,7 @@ namespace Cheat
 			radarEntityPos.x = (std::max)(radarPos.x, (std::min)(radarEntityPos.x, radarPos.x + radarSize));
 			radarEntityPos.y = (std::max)(radarPos.y, (std::min)(radarEntityPos.y, radarPos.y + radarSize));
 
-			DrawList->AddCircleFilled(radarEntityPos, 3.0f, ImColor(255, 0, 0, 255), 12);
+			DrawList->AddCircleFilled(radarEntityPos, 3.0f, ImColor(255, 255, 255, 255), 12);
 		}
 	}
 

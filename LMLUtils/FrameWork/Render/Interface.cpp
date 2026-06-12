@@ -196,11 +196,11 @@ namespace FrameWork
 		drawList->AddText(pos + ImVec2(padding, 5), ImColor(255, 255, 255, 255), "ACTIVE FEATURES");
 		ImGui::PopFont();
 
-		drawList->AddRectFilled(pos + ImVec2(padding, headerHeight - 2), pos + ImVec2(width - padding, headerHeight), ImColor(255, 0, 51, 255), 1.0f);
+		drawList->AddRectFilled(pos + ImVec2(padding, headerHeight - 2), pos + ImVec2(width - padding, headerHeight), ImColor(255, 255, 255, 255), 1.0f);
 
 		ImGui::PushFont(Assets::InterRegular);
 		float currentY = pos.y + headerHeight + 5.0f;
-		ImColor accentColor = ImColor(255, 0, 51, 255);
+		ImColor accentColor = ImColor(255, 255, 255, 255);
 
 		for (const char* feature : activeFeatures)
 		{
@@ -502,7 +502,7 @@ namespace FrameWork
 							{
 								float px = (sinf(anim + i * 0.85f) * .5f + .5f) * wSz.x;
 								float py = (cosf(anim + i * 0.55f) * .5f + .5f) * wSz.y;
-								dl->AddCircleFilled(wPos + ImVec2(px, py), 1.1f, ImColor(255, 0, 51, 100 * g_Options.General.ParticleOpacity / 100));
+								dl->AddCircleFilled(wPos + ImVec2(px, py), 1.1f, ImColor(255, 255, 255, 100 * g_Options.General.ParticleOpacity / 100));
 							}
 						}
 						ImGui::PushFont(Assets::InterBold);
@@ -581,7 +581,7 @@ namespace FrameWork
 					{
 						float px = (sinf(anim + i * 0.85f) * .5f + .5f) * wSz.x;
 						float py = (cosf(anim + i * 0.55f) * .5f + .5f) * wSz.y;
-						dl->AddCircleFilled(wPos + ImVec2(px, py), 1.1f, ImColor(255, 0, 51, 100 * g_Options.General.ParticleOpacity / 100));
+						dl->AddCircleFilled(wPos + ImVec2(px, py), 1.1f, ImColor(255, 255, 255, 100 * g_Options.General.ParticleOpacity / 100));
 					}
 				}
 
@@ -679,7 +679,7 @@ namespace FrameWork
 				ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.f);
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 10.f));
 				ImGui::PushStyleColor(ImGuiCol_Button,
-					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 0, 51, 200).Value);
+					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 255, 255, 200).Value);
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
 					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 40, 80, 230).Value);
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor(200, 0, 40, 255).Value);
@@ -775,7 +775,7 @@ namespace FrameWork
 				for (int i = 0; i < 48; i++) {
 					float x = (sin(menuBgAnim + i * 0.7f) * 0.5f + 0.5f) * Size.x;
 					float y = (cos(menuBgAnim + i * 0.4f) * 0.5f + 0.5f) * Size.y;
-					DrawList->AddCircleFilled(Pos + ImVec2(x, y), 1.3f, ImColor(255, 0, 51, 130 * g_Options.General.ParticleOpacity / 100));
+					DrawList->AddCircleFilled(Pos + ImVec2(x, y), 1.3f, ImColor(255, 255, 255, 130 * g_Options.General.ParticleOpacity / 100));
 				}
 			}
 
@@ -848,7 +848,7 @@ namespace FrameWork
 					{
 						float px = (sin(sidebarPartAnim + i * 0.7f) * 0.5f + 0.5f) * sbSize.x;
 						float py = (cos(sidebarPartAnim + i * 0.4f) * 0.5f + 0.5f) * sbSize.y;
-						sbDl->AddCircleFilled(sbPos + ImVec2(px, py), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+						sbDl->AddCircleFilled(sbPos + ImVec2(px, py), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 					}
 				}
 				const float itemH = 40.f;
@@ -895,7 +895,7 @@ namespace FrameWork
 				ImVec2 sbScreen = ImGui::GetWindowPos();
 				ImVec2 indicatorA = sbScreen + ImVec2(0.f, sidebarAnimY);
 				ImVec2 indicatorB = indicatorA + ImVec2(3.f, itemH);
-				ImGui::GetWindowDrawList()->AddRectFilled(indicatorA, indicatorB, IM_COL32(255, 0, 51, 255));
+				ImGui::GetWindowDrawList()->AddRectFilled(indicatorA, indicatorB, IM_COL32(255, 255, 255, 255));
 			}
 			ImGui::EndChild();
 			ImGui::PopStyleVar();
@@ -926,7 +926,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(legitAnim1 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(legitAnim1 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -957,7 +957,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(legitAnim3 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(legitAnim3 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -978,7 +978,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(legitAnim5 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(legitAnim5 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1007,7 +1007,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(legitAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(legitAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1031,7 +1031,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(legitAnim4 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(legitAnim4 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1065,7 +1065,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(legitAnim6 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(legitAnim6 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1120,7 +1120,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(visAnim1 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(visAnim1 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1158,7 +1158,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(visAnim5 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(visAnim5 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1183,7 +1183,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(visAnim3 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(visAnim3 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1227,7 +1227,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(visAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(visAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1272,7 +1272,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(playerAnim + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(playerAnim + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1324,7 +1324,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(playerAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(playerAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1396,8 +1396,8 @@ namespace FrameWork
 									ImDrawList* dl = ImGui::GetWindowDrawList();
 									float w = ImGui::GetContentRegionAvail().x + 4.f;
 									float lo = 10.f;
-									dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 0, 51, 40));
-									dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 0, 51, 200));
+									dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 255, 255, 40));
+									dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 255, 255, 200));
 								}
 								ImGui::PopID();
 								ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.f);
@@ -1429,7 +1429,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(vehAnim + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(vehAnim + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1468,7 +1468,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(vehAnimB + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(vehAnimB + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1520,7 +1520,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(worldAnim + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(worldAnim + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1575,8 +1575,8 @@ namespace FrameWork
 										ImDrawList* dl = ImGui::GetWindowDrawList();
 										float w = ImGui::GetContentRegionAvail().x + 4.f;
 										float lo = 10.f;
-										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 0, 51, 40));
-										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 0, 51, 200));
+										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 255, 255, 40));
+										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 255, 255, 200));
 									}
 									ImGui::PopID();
 									ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.f);
@@ -1600,7 +1600,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(worldAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(worldAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1621,8 +1621,8 @@ namespace FrameWork
 										ImDrawList* dl = ImGui::GetWindowDrawList();
 										float w = ImGui::GetContentRegionAvail().x;
 										float h = 28.f;
-										dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), IM_COL32(255, 0, 51, 30));
-										dl->AddRectFilled(p, ImVec2(p.x + 3, p.y + h), IM_COL32(255, 0, 51, 180));
+										dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), IM_COL32(255, 255, 255, 30));
+										dl->AddRectFilled(p, ImVec2(p.x + 3, p.y + h), IM_COL32(255, 255, 255, 180));
 										ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
 									}
 									ImGui::Indent(12.f);
@@ -1718,7 +1718,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(worldVehAnim + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(worldVehAnim + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1770,8 +1770,8 @@ namespace FrameWork
 										ImDrawList* dl = ImGui::GetWindowDrawList();
 										float w = ImGui::GetContentRegionAvail().x + 4.f;
 										float lo = 10.f;
-										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 0, 51, 40));
-										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 0, 51, 200));
+										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 255, 255, 40));
+										dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 255, 255, 200));
 									}
 									ImGui::PopID();
 									ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.f);
@@ -1795,7 +1795,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(worldVehAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(worldVehAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1817,8 +1817,8 @@ namespace FrameWork
 										ImDrawList* dl = ImGui::GetWindowDrawList();
 										float w = ImGui::GetContentRegionAvail().x;
 										float h = 28.f;
-										dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), IM_COL32(255, 0, 51, 30));
-										dl->AddRectFilled(p, ImVec2(p.x + 3, p.y + h), IM_COL32(255, 0, 51, 180));
+										dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), IM_COL32(255, 255, 255, 30));
+										dl->AddRectFilled(p, ImVec2(p.x + 3, p.y + h), IM_COL32(255, 255, 255, 180));
 										ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 4.f);
 									}
 									ImGui::Indent(12.f);
@@ -1884,7 +1884,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(setAnim + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(setAnim + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -1938,8 +1938,8 @@ namespace FrameWork
 											ImDrawList* dl = ImGui::GetWindowDrawList();
 											float w = ImGui::GetContentRegionAvail().x + 4.f;
 											float lo = 10.f;
-											dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 0, 51, 40));
-											dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 0, 51, 200));
+											dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x + w, rMax.y), IM_COL32(255, 255, 255, 40));
+											dl->AddRectFilled(ImVec2(rMin.x - lo, rMin.y), ImVec2(rMin.x - lo + 3, rMax.y), IM_COL32(255, 255, 255, 200));
 										}
 										ImGui::PopID();
 									}
@@ -1993,7 +1993,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(setAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(setAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -2059,7 +2059,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(trollAnim + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(trollAnim + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 
@@ -2111,7 +2111,7 @@ namespace FrameWork
 								for (int i = 0; i < 40; i++) {
 									float x = (sin(trollAnim2 + i * 0.7f) * 0.5f + 0.5f) * pSize.x;
 									float y = (cos(trollAnim2 + i * 0.4f) * 0.5f + 0.5f) * pSize.y;
-									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 0, 51, 180 * g_Options.General.ParticleOpacity / 100));
+									ImGui::GetWindowDrawList()->AddCircleFilled(pPos + ImVec2(x, y), 1.2f, ImColor(255, 255, 255, 180 * g_Options.General.ParticleOpacity / 100));
 								}
 							}
 

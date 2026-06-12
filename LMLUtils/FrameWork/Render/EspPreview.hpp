@@ -446,7 +446,7 @@ namespace Cheat
 		std::vector<cDragWidget> mWidgets =
 		{
 			cDragWidget{ 1, 3, XorStr("HealthBar"), ImColor(0, 255, 12) },
-			cDragWidget{ 1, 3, XorStr("ArmorBar"), ImColor(255, 0, 51) },
+			cDragWidget{ 1, 3, XorStr("ArmorBar"), ImColor(255, 255, 255) },
 			cDragWidget{ 0, 2, XorStr("Username"), ImColor(255, 255, 255) },
 			cDragWidget{ 0, 2, XorStr("Unarmed"), ImColor(255, 255, 255) },
 			cDragWidget{ 0, 2, XorStr("0m"), ImColor(255, 255, 255) }

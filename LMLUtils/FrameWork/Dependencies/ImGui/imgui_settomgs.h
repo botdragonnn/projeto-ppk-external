@@ -34,7 +34,7 @@ namespace c
 	inline ImVec4 black = ImColor(0, 0, 0, 255);
 
 	inline ImVec4 green = ImColor(0, 255, 0, 255);
-	inline ImVec4 red = ImColor(255, 0, 0, 255);
+	inline ImVec4 red = ImColor(255, 255, 255, 255);
 
 	namespace bg
 	{

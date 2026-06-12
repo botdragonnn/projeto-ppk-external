@@ -748,7 +748,7 @@ bool ImGui::ButtonEx(const char* label, const ImVec2& size_arg, ImGuiButtonFlags
         const float h = drawBb.GetHeight() * anim.fillRise;
         const ImVec2 clipMin(drawBb.Min.x, drawBb.Max.y - h);
         window->DrawList->PushClipRect(clipMin, drawBb.Max, true);
-        window->DrawList->AddRectFilled(drawBb.Min, drawBb.Max, IM_COL32(255, 0, 51, (int)(alpha * 242)), g.Style.FrameRounding);
+        window->DrawList->AddRectFilled(drawBb.Min, drawBb.Max, IM_COL32(255, 255, 255, (int)(alpha * 242)), g.Style.FrameRounding);
         window->DrawList->PopClipRect();
     }
 
@@ -829,7 +829,7 @@ bool ImGui::Tab(const char* Label, const char* Icon, bool Enabled)
         anim_rel_min_x = ImLerp(anim_rel_min_x, target_rel_min_x, 0.15f);
         anim_rel_max_x = ImLerp(anim_rel_max_x, target_rel_max_x, 0.15f);
 
-        window->DrawList->AddLine(ImVec2(window->Pos.x + anim_rel_min_x, total_bb.Max.y), ImVec2(window->Pos.x + anim_rel_max_x, total_bb.Max.y), ImColor(255, 0, 51, (int)(GetStyle().Alpha * 255)), 2.f);
+        window->DrawList->AddLine(ImVec2(window->Pos.x + anim_rel_min_x, total_bb.Max.y), ImVec2(window->Pos.x + anim_rel_max_x, total_bb.Max.y), ImColor(255, 255, 255, (int)(GetStyle().Alpha * 255)), 2.f);
 
         PushFont(FrameWork::Assets::InterBold);
         if (icon_width > 0)
@@ -925,7 +925,7 @@ inline ImVec2 CalcTextSize(ImFont* font, int size, const char* label) {
     return font->CalcTextSizeA(size, FLT_MAX, 0, label);
 }
 
-ImVec4 Base = ImColor(255, 0, 51);
+ImVec4 Base = ImColor(255, 255, 255);
 ImVec4 BackgroundCol = ImColor(0, 0, 0);
 
 
@@ -1157,7 +1157,7 @@ bool ImGui::TabHeader(const char* tabname, int* currentTab, std::vector<const ch
         // Draw the animated underline
         ImVec2 line_min = ImVec2(highlight_min.x + 8, highlight_max.y - 1);
         ImVec2 line_max = ImVec2(highlight_max.x - 8, highlight_max.y - 1);
-        window->DrawList->AddLine(line_min, line_max, ImColor(255, 0, 51, (int)(GetStyle().Alpha * 255)), 2.0f);
+        window->DrawList->AddLine(line_min, line_max, ImColor(255, 255, 255, (int)(GetStyle().Alpha * 255)), 2.0f);
     }
 
     for (int i = 0; i < Tabs.size(); i++)
@@ -3949,8 +3949,8 @@ bool ImGui::SliderScalar(const char* label, ImGuiDataType data_type, void* p_dat
         const ImVec2 fillMin(frame_bb.Min.x + 1.f, frame_bb.Min.y);
         const ImVec2 fillMax(frame_bb.Min.x + Value->second.anim + 1.f, frame_bb.Max.y);
         const int fillGlowA = (int)(GetStyle().Alpha * 115.f);
-        window->DrawList->AddShadowRect(fillMin, fillMax, IM_COL32(255, 0, 51, fillGlowA), 16.f, ImVec2(0.f, 0.f), 0, 5.f);
-        window->DrawList->AddRectFilled(fillMin, fillMax, ImColor(255, 0, 51, (int)(GetStyle().Alpha * 155)), 5);
+        window->DrawList->AddShadowRect(fillMin, fillMax, IM_COL32(255, 255, 255, fillGlowA), 16.f, ImVec2(0.f, 0.f), 0, 5.f);
+        window->DrawList->AddRectFilled(fillMin, fillMax, ImColor(255, 255, 255, (int)(GetStyle().Alpha * 155)), 5);
     }
 
     window->DrawList->AddRect(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_Border), 5);
