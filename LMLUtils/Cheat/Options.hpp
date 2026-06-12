@@ -250,7 +250,7 @@
 		bool WaterMark = false;
 		bool WaterMarkCol = false;
 		float WaterMarkColor[4] = { 1.f, 1.f, 1.f, 1.f };
-				bool Particles = true;
+				bool Particles = false;
 				int ParticleOpacity = 50;
 				bool Plexus = true;
 				int PlexusOpacity = 100;

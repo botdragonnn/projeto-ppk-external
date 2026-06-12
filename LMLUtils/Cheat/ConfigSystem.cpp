@@ -125,8 +125,8 @@ namespace Cheat
         SetupItem(&g_Options.Visuals.ESP.Players.RenderDistance, 200, "Visuals.ESP.Players.RenderDistance");
         SetupItem(&g_Options.Visuals.ESP.Players.Box, false, "Visuals.ESP.Players.Box");
         SetupItem(&g_Options.Visuals.ESP.Players.Minimap, false, "Visuals.ESP.Players.Minimap");
-        SetupItem(&g_Options.Visuals.ESP.Players.Skeleton, true, "Visuals.ESP.Players.Skeleton");
-        SetupItem(&g_Options.Visuals.ESP.Players.Name, true, "Visuals.ESP.Players.Name");
+        SetupItem(&g_Options.Visuals.ESP.Players.Skeleton, false, "Visuals.ESP.Players.Skeleton");
+        SetupItem(&g_Options.Visuals.ESP.Players.Name, false, "Visuals.ESP.Players.Name");
         SetupItem(&g_Options.Visuals.ESP.Players.HealthBar, false, "Visuals.ESP.Players.HealthBar");
         SetupItem(&g_Options.Visuals.ESP.Players.ArmorBar, false, "Visuals.ESP.Players.ArmorBar");
         SetupItem(&g_Options.Visuals.ESP.Players.WeaponName, false, "Visuals.ESP.Players.WeaponName");
@@ -271,7 +271,7 @@ namespace Cheat
         SetupItem(&g_Options.General.KeyBindState, 0, "General.KeyBindState");
         SetupItem(&g_Options.General.CaptureBypass, true, "General.CaptureBypass");
         SetupItem(&g_Options.General.WaterMark, false, "General.WaterMark");
-        SetupItem(&g_Options.General.Particles, true, "General.Particles");
+        SetupItem(&g_Options.General.Particles, false, "General.Particles");
         SetupItem(&g_Options.General.ParticleOpacity, 50, "General.ParticleOpacity");
         SetupItem(&g_Options.General.Plexus, true, "General.Plexus");
         SetupItem(&g_Options.General.PlexusOpacity, 100, "General.PlexusOpacity");

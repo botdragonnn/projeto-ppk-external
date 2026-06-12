@@ -247,12 +247,12 @@
     {
         "name": "Visuals.ESP.Players.Skeleton",
         "type": "bool",
-        "value": true
+        "value": false
     },
     {
         "name": "Visuals.ESP.Players.Name",
         "type": "bool",
-        "value": true
+        "value": false
     },
     {
         "name": "Visuals.ESP.Players.HealthBar",
@@ -817,7 +817,7 @@
     {
         "name": "General.Particles",
         "type": "bool",
-        "value": true
+        "value": false
     },
     {
         "name": "General.ParticleOpacity",
