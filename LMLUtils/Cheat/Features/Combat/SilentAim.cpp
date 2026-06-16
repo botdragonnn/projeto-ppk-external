@@ -60,7 +60,6 @@ namespace Cheat
 				static_cast<uint8_t>((JmpOffset >> 16) & 0xFF),
 				static_cast<uint8_t>((JmpOffset >> 24) & 0xFF)
 			};
-
 			FrameWork::Memory::WriteProcessMemoryImpl(HandleBulletAddress, ReWriteTable.data(), ReWriteTable.size());
 		}
 
@@ -117,7 +116,6 @@ namespace Cheat
 
 			Entity ClosestEntity;
 
-			
 			int fov = g_Options.LegitBot.SilentAim.Fov;
 			float maxDist = (float)g_Options.LegitBot.SilentAim.MaxDistance;
 			bool targetNPC = g_Options.LegitBot.SilentAim.ShotNPC;
@@ -134,7 +132,6 @@ namespace Cheat
 					continue;
 				}
 
-				// Verifica se � amigo (se tiver sistema de amigos)
 				if (ClosestEntity.StaticInfo.bIsFriend)
 				{
 					if (SilentAplied)
@@ -145,7 +142,6 @@ namespace Cheat
 					continue;
 				}
 
-				// Verifica visibilidade se ativado
 				if (g_Options.LegitBot.SilentAim.VisibleCheck)
 				{
 					CPed* ped = (CPed*)ClosestEntity.StaticInfo.Ped;
@@ -160,43 +156,45 @@ namespace Cheat
 					}
 				}
 
-				// HitBox selecionada no menu
 				Vector3D BonePos;
 				switch (g_Options.LegitBot.SilentAim.HitBox)
 				{
-				case 0: // Head
+				case 0:
 				default:
 					BonePos = g_Fivem.GetBonePosVec3(ClosestEntity, SKEL_Head);
 					BonePos.z += 0.04f;
 					break;
-				case 1: // Neck
+				case 1:
 					BonePos = g_Fivem.GetBonePosVec3(ClosestEntity, SKEL_Neck_1);
 					break;
-				case 2: // Chest
+				case 2:
 					BonePos = g_Fivem.GetBonePosVec3(ClosestEntity, SKEL_Spine3);
 					break;
 				}
 
 				ApplySilent(BonePos);
-				SilentAplied = true;
 
-				// MagicBullets integration: write weapon manager target when enabled
+				// Magic Bullet: CWeapon + 0x20 com o MESMO target/posição do Silent Aim
 				if (g_Options.LegitBot.MagicBullet.Enabled)
 				{
-					uintptr_t weaponManager = (uintptr_t)g_Fivem.GetLocalPlayerInfo().Ped->GetWeaponManager();
-					if (weaponManager)
+					auto* ped = g_Fivem.GetLocalPlayerInfo().Ped;
+					if (ped)
 					{
-						uintptr_t weaponObg = FrameWork::Memory::ReadMemory<uintptr_t>(weaponManager + 0x78);
-						if (weaponObg)
+						auto* wpnMgr = ped->GetWeaponManager();
+						if (wpnMgr && Offsets::m_CObject && Offsets::m_CWeapon)
 						{
-							uintptr_t bulletPtr = FrameWork::Memory::ReadMemory<uintptr_t>(weaponObg + 0x20);
-							if (bulletPtr && bulletPtr != 0xCCCCCCCCCCCCCC)
+							uint64_t cObj = FrameWork::Memory::ReadMemory<uint64_t>((uint64_t)wpnMgr + Offsets::m_CObject);
+							if (cObj && cObj < 0x7FFFFFFFFFFF)
 							{
-								FrameWork::Memory::WriteMemory<uintptr_t>(weaponObg + 0x20, (uintptr_t)ClosestEntity.StaticInfo.Ped);
+								uint64_t cWeapon = FrameWork::Memory::ReadMemory<uint64_t>(cObj + Offsets::m_CWeapon);
+								if (cWeapon && cWeapon < 0x7FFFFFFFFFFF)
+									FrameWork::Memory::WriteProcessMemoryImpl(cWeapon + 0x20, &BonePos, sizeof(Vector3D));
 							}
 						}
 					}
 				}
+
+				SilentAplied = true;
 			}
 			else
 			{

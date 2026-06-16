@@ -6,6 +6,7 @@
 #include <FrameWork/Utilities/Notify.hpp>
 #include "ConfigSystem.hpp"
 #include <FrameWork/includes/Language.hpp>
+#include "Features/Combat/MagicBullet.hpp"
 
 namespace Cheat
 {
@@ -515,6 +516,7 @@ namespace Cheat
     {
         g_Options.General.ShutDown = true;
 
+        MagicBullet::Restore();
         WebRemote::Stop();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(50));

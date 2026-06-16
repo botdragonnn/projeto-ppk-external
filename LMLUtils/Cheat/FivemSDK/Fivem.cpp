@@ -787,6 +787,27 @@ namespace Cheat
 			PatchButt = FrameWork::Memory::FindSignature(coronhadaSig, ModuleBase, ModuleBaseSize);
 		}
 
+		// ── Magic Bullet offsets (pattern-scanned, Undefined approach) ──
+		{
+			uintptr_t ObjectSigAddr = FrameWork::Memory::FindSignature(
+				{ 0x4c, 0x8b, 0x41, 0x00, 0x4d, 0x85, 0xc9 },
+				ModuleBase, ModuleBaseSize);
+			if (ObjectSigAddr)
+				Offsets::m_CObject = FrameWork::Memory::ReadMemory<uint8_t>(ObjectSigAddr + 3);
+		}
+		{
+			uintptr_t CWeaponSigAddr = FrameWork::Memory::FindSignature(
+				{ 0x48, 0x8b, 0x8b, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8b, 0xd7, 0xe8, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8b, 0x8b, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8b, 0xd7, 0xe8 },
+				ModuleBase, ModuleBaseSize);
+			if (CWeaponSigAddr)
+				Offsets::m_CWeapon = FrameWork::Memory::ReadMemory<int32_t>(CWeaponSigAddr + 3);
+		}
+		{
+			Offsets::m_MagicBulletsPatch = FrameWork::Memory::FindSignature(
+				{ 0x0F, 0x29, 0x4F, 0x00, 0x83, 0x8F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x48, 0x8B, 0x4F },
+				ModuleBase, ModuleBaseSize);
+		}
+
 		// ── Shellcode init ──
 		InitRaycastShellcode();
 		InitAnimShellcode();

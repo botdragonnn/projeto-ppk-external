@@ -51,5 +51,8 @@
 			inline extern uint64_t m_Spread = 0;
 			inline extern uint64_t m_RaycastTable = 0;
 			extern uint64_t Coronhada;
+			inline extern uint64_t m_CObject = 0;
+			inline extern uint64_t m_CWeapon = 0;
+			inline extern uint64_t m_MagicBulletsPatch = 0;
 		}
 	}

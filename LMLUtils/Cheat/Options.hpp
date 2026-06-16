@@ -193,12 +193,12 @@
 				int UnlockNearbyKeyState = 0;
 				float RocketBoostStrength = 5.0f;
 				float JumpGravity = 3.0f;
-				bool ModifyHandling = false;
-				int HandlingAccel = 0;
-				int HandlingBrake = 0;
-				int HandlingTraction = 0;
-				bool HandlingResetRequested = false;
-			}Vehicle;
+			bool ModifyHandling = false;
+			int HandlingAccel = 0;
+			int HandlingBrake = 0;
+			int HandlingTraction = 0;
+			bool HandlingResetRequested = false;
+		}Vehicle;
 				struct Weapon
 				{
 					bool InfiniteAmmoEnabled = false;
