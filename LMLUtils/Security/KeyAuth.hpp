@@ -80,7 +80,7 @@ namespace Security
     inline std::string KeyAuthRequest(const std::string& postData)
     {
         std::string response;
-        HINTERNET hSession = WinHttpOpen(L"ScarfaceX-External/1.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+        HINTERNET hSession = WinHttpOpen(L"Advanced-External/1.0", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
         if (!hSession) return response;
 
         HINTERNET hConnect = WinHttpConnect(hSession, L"keyauth.win", INTERNET_DEFAULT_HTTPS_PORT, 0);
@@ -156,7 +156,7 @@ namespace Security
 
         if (key.empty()) { CurrentLicense.lastError = "Key is empty"; return false; }
 
-        const std::string name = "ScarfaceX";
+        const std::string name = "Advanced";
         const std::string ownerid = "Iwdu7Lrjv1";
         const std::string secret = "027905926a62c53716a0a3786f9fca4e4a77bce5391d915ded2eca3c53d07bb3";
         const std::string version = "1.0";

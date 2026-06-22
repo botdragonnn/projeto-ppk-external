@@ -1,7 +1,7 @@
 // KeyAuth v1.3 — Credenciais ATUAIS (backup)
-// Arquivo: ScarfaceX/Security/KeyAuth.hpp (linhas 159-162)
+// Arquivo: Advanced/Security/KeyAuth.hpp (linhas 159-162)
 
-const std::string name = "ScarfaceX";
+const std::string name = "Advanced";
 const std::string ownerid = "qs0kSLr3B9";
 const std::string secret = "3af39c6065eabed8edc9bd46a770231628d0363106dfb7949fc2fac9ff1dc2c7";
 const std::string version = "1.0";

@@ -15,7 +15,7 @@
 - **Config**: `config.json` in working directory (relative path, `ConfigSystem::SaveToFile` writes `config.json` at cwd). Config slot pattern: `config_<name>.json`. 177 unique items; some in the file are legacy/unused.
 - **Language**: Dual EN/PT via `Language::Translations` map. Controlled by `g_Options.General.Language` (0=EN,1=PT). Uses `_T(text)` macro for translations
 - **Auth**: KeyAuth v1.3 (`Security/KeyAuth.hpp:159-161`). `ownerid="Iwdu7Lrjv1"`, `secret="027905926a62c53716a0a3786f9fca4e4a77bce5391d915ded2eca3c53d07bb3"`. Flow: `type=init` → sessionid → `type=license` with HWID
-- **Persistent login**: key saved to `%appdata%/ScarfaceX/login.key`, auto-loaded on startup
+- **Persistent login**: key saved to `%appdata%/Advanced/login.key`, auto-loaded on startup
 - **SDK**: FiveM memory reading via `FivemSDK/Fivem.cpp` (~1844 lines). Both `GetBonePosByInstFragAndID` and `GetBonePosFromCPed` exist but combat only uses the former
 - **Options**: `Cheat/Options.hpp` — single `g_Options` global of struct `Cheat::Options` with nested structs
 - **ProcessPriority**: 0=Normal, 1=AboveNormal, 2=High, 3=Realtime (set via `SetProcessPriority()` in `LMLUtils.cpp:28`)

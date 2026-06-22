@@ -33,7 +33,7 @@ inline std::string GetLicensePath()
 	char path[MAX_PATH];
 	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, path)))
 	{
-		std::string p = std::string(path) + "\\ScarfaceX";
+		std::string p = std::string(path) + "\\Advanced";
 		CreateDirectoryA(p.c_str(), NULL);
 		return p + "\\login.key";
 	}
@@ -412,7 +412,7 @@ namespace FrameWork
 			ImDrawList* drawList = ImGui::GetForegroundDrawList();
 			ImVec2 screenSize = ImGui::GetIO().DisplaySize;
 			ImGui::PushFont(Assets::InterBold);
-			std::string watermarkText = "ScarfaceX";
+			std::string watermarkText = "Advanced";
 			ImColor wmColor = g_Options.General.WaterMarkCol
 				? FrameWork::Misc::Float4ToImColor(g_Options.General.WaterMarkColor)
 				: ImColor(255, 255, 255, 200);

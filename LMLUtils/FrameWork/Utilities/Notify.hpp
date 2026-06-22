@@ -230,7 +230,7 @@ namespace NotifyManager
     inline void Send(std::string Description, time_t ExpireTime = 4000)
     {
         NotifyManager::NotifyClass Notify(NotifyManager::eType::Info, ExpireTime);
-        Notify.SetTitle("ScarfaceX");
+        Notify.SetTitle("Advanced");
         Notify.SetDescription(Description);
         NotifyList.push_back(Notify);
 

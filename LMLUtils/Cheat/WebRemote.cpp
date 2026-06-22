@@ -32,7 +32,7 @@ namespace Cheat
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScarfaceX Remote Control</title>
+    <title>Advanced Remote Control</title>
     <style>
         * { box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #000000; color: #e0e0e0; margin: 0; padding: 20px; }
@@ -66,7 +66,7 @@ namespace Cheat
 </head>
 <body>
     <div class="container">
-        <h1>ScarfaceX Remote</h1>
+        <h1>Advanced Remote</h1>
 
         <!-- LegitBot -->
         <div class="section">

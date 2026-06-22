@@ -136,7 +136,7 @@ namespace FrameWork
 	std::string Misc::HttpRequest(const std::wstring& host, int port, const std::wstring& path, const std::string& method, const std::string& body, bool secure)
 	{
 		std::string Response;
-		HINTERNET hSession = WinHttpOpen(XorStr(L"ScarfaceX-External/1.0"), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+		HINTERNET hSession = WinHttpOpen(XorStr(L"Advanced-External/1.0"), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 
 		if (hSession)
 		{
