@@ -173,27 +173,6 @@ namespace Cheat
 				}
 
 				ApplySilent(BonePos);
-
-				// Magic Bullet: CWeapon + 0x20 com o MESMO target/posição do Silent Aim
-				if (g_Options.LegitBot.MagicBullet.Enabled)
-				{
-					auto* ped = g_Fivem.GetLocalPlayerInfo().Ped;
-					if (ped)
-					{
-						auto* wpnMgr = ped->GetWeaponManager();
-						if (wpnMgr && Offsets::m_CObject && Offsets::m_CWeapon)
-						{
-							uint64_t cObj = FrameWork::Memory::ReadMemory<uint64_t>((uint64_t)wpnMgr + Offsets::m_CObject);
-							if (cObj && cObj < 0x7FFFFFFFFFFF)
-							{
-								uint64_t cWeapon = FrameWork::Memory::ReadMemory<uint64_t>(cObj + Offsets::m_CWeapon);
-								if (cWeapon && cWeapon < 0x7FFFFFFFFFFF)
-									FrameWork::Memory::WriteProcessMemoryImpl(cWeapon + 0x20, &BonePos, sizeof(Vector3D));
-							}
-						}
-					}
-				}
-
 				SilentAplied = true;
 			}
 			else
