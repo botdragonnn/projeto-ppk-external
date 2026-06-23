@@ -8,7 +8,6 @@
 #include <Cheat/WebRemote.hpp>
 #include <Cheat/Cheat.hpp>
 #include <Cheat/ConfigSystem.hpp>
-#include <Security/KeyAuth.hpp>
 #include <FrameWork/Dependencies/ImGui/imgui_edited.hpp>
 #include <algorithm>
 #include <FrameWork/Utilities/Notify.hpp>
@@ -23,54 +22,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 
 inline Cheat::ConfigManager ConfigManager;
 
-// Flags de resultado da thread de autenticação
-static std::atomic<bool> g_AuthCheckDone{ false };
-static std::atomic<bool> g_AuthCheckResult{ false };
-static std::atomic<bool> g_AutoAuthAttempted{ false };
 
-inline std::string GetLicensePath()
-{
-	char path[MAX_PATH];
-	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, path)))
-	{
-		std::string p = std::string(path) + "\\Advanced";
-		CreateDirectoryA(p.c_str(), NULL);
-		return p + "\\login.key";
-	}
-	return "login.key";
-}
-
-inline void SaveLicenseKey(const std::string& key)
-{
-	HANDLE h = CreateFileA(GetLicensePath().c_str(), GENERIC_WRITE, 0, NULL,
-		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (h != INVALID_HANDLE_VALUE)
-	{
-		DWORD written;
-		WriteFile(h, key.c_str(), (DWORD)key.size(), &written, NULL);
-		CloseHandle(h);
-	}
-}
-
-inline std::string LoadLicenseKey()
-{
-	std::string path = GetLicensePath();
-	HANDLE h = CreateFileA(path.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (h == INVALID_HANDLE_VALUE) return {};
-	DWORD sz = GetFileSize(h, NULL);
-	std::string buf(sz, '\0');
-	DWORD read;
-	if (ReadFile(h, &buf[0], sz, &read, NULL))
-		buf.resize(read);
-	CloseHandle(h);
-	return buf;
-}
-
-inline void DeleteLicenseKey()
-{
-	DeleteFileA(GetLicensePath().c_str());
-}
 
 struct MarkerT
 {
@@ -427,165 +379,21 @@ namespace FrameWork
 		// ── Tela de Login ─────────────────────────────────────────────────────
 		if (!g_Options.General.IsLoggedIn)
 		{
-			static char  s_Key[64] = "";
-			static bool  s_Wrong = false;
-			static bool  s_Checking = false;
-			static bool  s_AutoChecking = false;
-			static float s_ShakeTimer = 0.f;
-			static float s_ShakeOff = 0.f;
-			static float s_DotTimer = 0.f;
-
-			// Auto-login com chave salva
-			if (!g_AutoAuthAttempted.load() && !s_AutoChecking && !s_Checking && s_Key[0] == '\0')
-			{
-				std::string savedKey = LoadLicenseKey();
-				if (savedKey.empty() && strlen(g_Options.General.LicenseKey) > 0)
-					savedKey = g_Options.General.LicenseKey;
-				if (!savedKey.empty())
-				{
-					s_AutoChecking = true;
-					strcpy_s(s_Key, savedKey.c_str());
-					std::thread([savedKey]()
-						{
-							bool ok = ::Security::Authenticate(savedKey);
-							if (ok)
-							{
-								g_Options.General.IsLoggedIn = true;
-								g_Options.General.DaysLeft = ::Security::CurrentLicense.daysLeft;
-								g_Options.General.UserName = ::Security::CurrentLicense.username;
-							}
-							g_AuthCheckResult = ok;
-							g_AuthCheckDone = true;
-							g_AutoAuthAttempted = true;
-						}).detach();
-				}
-				else
-				{
-					g_AutoAuthAttempted = true;
-				}
-			}
-
-			if (s_AutoChecking)
-			{
-				s_DotTimer += ImGui::GetIO().DeltaTime;
-				if (g_AuthCheckDone.load())
-				{
-					g_AuthCheckDone = false;
-					s_AutoChecking = false;
-					s_Checking = false;
-					if (!g_AuthCheckResult.load())
-					{
-						s_Key[0] = '\0';
-						s_Wrong = true;
-						DeleteLicenseKey();
-					}
-				}
-				else
-				{
-					// Tela de "Checking saved license..."
-					const ImVec2 kSz = { 420.f, 360.f };
-					ImVec2 scr = ImGui::GetIO().DisplaySize;
-					ImGui::SetNextWindowPos(ImVec2((scr.x - kSz.x) * .5f, (scr.y - kSz.y) * .5f), ImGuiCond_Once);
-					ImGui::SetNextWindowSize(kSz);
-					ImGui::Begin("##login", nullptr,
-						ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
-						ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-					{
-						ImDrawList* dl = ImGui::GetWindowDrawList();
-						ImVec2 wPos = ImGui::GetWindowPos();
-						ImVec2 wSz = ImGui::GetWindowSize();
-						dl->AddRectFilled(wPos, wPos + wSz, ImColor(0, 0, 0), 4.f);
-						{
-							static float anim = 0.f;
-							anim += ImGui::GetIO().DeltaTime * 0.4f;
-							for (int i = 0; i < 28; i++)
-							{
-								float px = (sinf(anim + i * 0.85f) * .5f + .5f) * wSz.x;
-								float py = (cosf(anim + i * 0.55f) * .5f + .5f) * wSz.y;
-								dl->AddCircleFilled(wPos + ImVec2(px, py), 1.1f, ImColor(255, 255, 255, 100 * g_Options.General.ParticleOpacity / 100));
-							}
-						}
-						ImGui::PushFont(Assets::InterBold);
-						{
-							if (SidebarLogo)
-							{
-								float logoW = 200.f;
-								float logoH = logoW;
-								float logoX = (wSz.x - logoW) * .5f;
-								dl->AddImage(SidebarLogo, wPos + ImVec2(logoX, 16.f), wPos + ImVec2(logoX + logoW, 16.f + logoH));
-							}
-							const char* t = XorStr("SCARFACEX EXTERNAL");
-							ImVec2 ts = ImGui::CalcTextSize(t);
-							dl->AddText(Assets::InterBold, 16.f,
-								wPos + ImVec2((wSz.x - ts.x) * .5f, 180.f),
-								ImColor(255, 255, 255), t);
-						}
-						ImGui::PopFont();
-						ImGui::PushFont(Assets::InterRegular);
-						{
-							static const char* dots[] = {
-								"Checking license   ", "Checking license.  ", "Checking license.. ", "Checking license..."
-							};
-							const char* msg = dots[(int)(s_DotTimer * 3.f) % 4];
-							ImVec2 ss = ImGui::CalcTextSize(msg);
-							dl->AddText(Assets::InterRegular, 13.f,
-								wPos + ImVec2((wSz.x - ss.x) * .5f, 202.f),
-								ImColor(130, 130, 140), msg);
-						}
-						ImGui::PopFont();
-						if (g_Options.General.Plexus)
-							RenderParticleBackground(dl, wPos, wSz);
-						dl->AddRect(wPos, wPos + wSz, ImColor(64, 64, 64), 4.f, 0, 1.5f);
-					}
-					ImGui::End();
-					return;
-				}
-			}
-
-			if (s_ShakeTimer > 0.f)
-			{
-				s_ShakeTimer -= ImGui::GetIO().DeltaTime;
-				s_ShakeOff = sinf(s_ShakeTimer * 60.f) * 4.f;
-			}
-			else s_ShakeOff = 0.f;
-
-			if (s_Checking) s_DotTimer += ImGui::GetIO().DeltaTime;
-
 			const ImVec2 kSz = { 420.f, 360.f };
 			ImVec2 scr = ImGui::GetIO().DisplaySize;
-
-			ImGui::SetNextWindowPos(
-				ImVec2((scr.x - kSz.x) * .5f, (scr.y - kSz.y) * .5f),
-				ImGuiCond_Once);
+			ImGui::SetNextWindowPos(ImVec2((scr.x - kSz.x) * .5f, (scr.y - kSz.y) * .5f), ImGuiCond_Once);
 			ImGui::SetNextWindowSize(kSz);
 			ImGui::Begin("##login", nullptr,
 				ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
 				ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 			{
-				if (s_ShakeOff != 0.f)
-				{
-					ImVec2 p = ImGui::GetWindowPos();
-					ImGui::SetWindowPos(ImVec2(p.x + s_ShakeOff, p.y));
-				}
-
 				ImDrawList* dl = ImGui::GetWindowDrawList();
 				ImVec2 wPos = ImGui::GetWindowPos();
 				ImVec2 wSz = ImGui::GetWindowSize();
 
 				dl->AddRectFilled(wPos, wPos + wSz, ImColor(0, 0, 0), 4.f);
 
-				{
-					static float anim = 0.f;
-					anim += ImGui::GetIO().DeltaTime * 0.4f;
-					for (int i = 0; i < 28; i++)
-					{
-						float px = (sinf(anim + i * 0.85f) * .5f + .5f) * wSz.x;
-						float py = (cosf(anim + i * 0.55f) * .5f + .5f) * wSz.y;
-						dl->AddCircleFilled(wPos + ImVec2(px, py), 1.1f, ImColor(255, 255, 255, 100 * g_Options.General.ParticleOpacity / 100));
-					}
-				}
-
-					ImGui::PushFont(Assets::InterBold);
+				ImGui::PushFont(Assets::InterBold);
 				{
 					if (SidebarLogo)
 					{
@@ -594,151 +402,37 @@ namespace FrameWork
 						float logoX = (wSz.x - logoW) * .5f;
 						dl->AddImage(SidebarLogo, wPos + ImVec2(logoX, 16.f), wPos + ImVec2(logoX + logoW, 16.f + logoH));
 					}
-					const char* t = XorStr("SCARFACEX EXTERNAL");
+					const char* t = "ADVANCED";
 					ImVec2 ts = ImGui::CalcTextSize(t);
-					dl->AddText(Assets::InterBold, 16.f,
+					dl->AddText(Assets::InterBold, 18.f,
 						wPos + ImVec2((wSz.x - ts.x) * .5f, 180.f),
 						ImColor(255, 255, 255), t);
 				}
 				ImGui::PopFont();
 
-				ImGui::PushFont(Assets::InterRegular);
-				{
-					const char* s = XorStr("Enter your license key to continue");
-					ImVec2 ss = ImGui::CalcTextSize(s);
-					dl->AddText(Assets::InterRegular, 13.f,
-						wPos + ImVec2((wSz.x - ss.x) * .5f, 202.f),
-						ImColor(130, 130, 140), s);
-				}
-				ImGui::PopFont();
-
-				dl->AddRectFilled(wPos + ImVec2(30.f, 225.f),
-					wPos + ImVec2(wSz.x - 30.f, 226.f),
-					ImColor(35, 35, 45));
-
-				if (g_Options.General.Plexus)
-					RenderParticleBackground(dl, wPos, wSz);
 				dl->AddRect(wPos, wPos + wSz, ImColor(64, 64, 64), 4.f, 0, 1.5f);
 
-				const float iW = wSz.x - 60.f;
-				const float iX = 30.f;
-				const float iY = 238.f;
+				const float btnW = 200.f;
+				const float btnX = (wSz.x - btnW) * .5f;
+				const float btnY = 220.f;
 
-				ImGui::SetCursorPos(ImVec2(iX, iY));
-				ImGui::SetNextItemWidth(iW);
-
-				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.f, 10.f));
+				ImGui::SetCursorPos(ImVec2(btnX, btnY));
+				ImGui::PushFont(Assets::InterBold);
 				ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.f);
-				ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1.f);
-				ImGui::PushStyleColor(ImGuiCol_FrameBg, ImColor(32, 32, 32).Value);
-				ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImColor(64, 64, 64).Value);
-				ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImColor(96, 96, 96).Value);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImColor(255, 255, 255).Value);
-				ImGui::PushStyleColor(ImGuiCol_Border,
-					s_Wrong ? ImColor(220, 60, 60).Value : ImColor(50, 50, 60).Value);
-
-				bool enter = false;
-				if (s_Checking)
-				{
-					ImGui::BeginDisabled();
-					ImGui::InputText("##key", s_Key, sizeof(s_Key),
-						ImGuiInputTextFlags_Password);
-					ImGui::EndDisabled();
-				}
-				else
-				{
-					enter = ImGui::InputText("##key", s_Key, sizeof(s_Key),
-						ImGuiInputTextFlags_EnterReturnsTrue |
-						ImGuiInputTextFlags_Password);
-				}
-
-				ImGui::PopStyleColor(5);
-				ImGui::PopStyleVar(3);
-
-				if (s_Key[0] == '\0' && !s_Checking)
-					dl->AddText(ImGui::GetItemRectMin() + ImVec2(12.f, 10.f),
-						ImColor(70, 70, 80), XorStr("XXXX-XXXX-XXXX-XXXX"));
-
-				if (s_Wrong && !s_Checking)
-				{
-					ImGui::PushFont(Assets::InterRegular);
-					std::string authMsg = ::Security::CurrentLicense.lastError;
-					if (authMsg.empty()) authMsg = "Invalid key. Try again.";
-					if (ImGui::CalcTextSize(authMsg.c_str()).x > wSz.x - 40.f)
-						authMsg = authMsg.substr(0, 35) + "...";
-					ImVec2 es = ImGui::CalcTextSize(authMsg.c_str());
-					dl->AddText(Assets::InterRegular, 12.f,
-						wPos + ImVec2((wSz.x - es.x) * .5f, iY + 42.f),
-						ImColor(220, 80, 80), authMsg.c_str());
-					ImGui::PopFont();
-				}
-
-				const float bY = iY + (s_Wrong && !s_Checking ? 62.f : 52.f);
-				ImGui::SetCursorPos(ImVec2(iX, bY));
-
-				ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.f);
-				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 10.f));
-				ImGui::PushStyleColor(ImGuiCol_Button,
-					s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(255, 255, 255, 200).Value);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-				s_Checking ? ImColor(50, 50, 60, 200).Value : ImColor(172, 172, 172, 230).Value);
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.f, 12.f));
+				ImGui::PushStyleColor(ImGuiCol_Button, ImColor(255, 255, 255, 200).Value);
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImColor(172, 172, 172, 230).Value);
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImColor(200, 200, 200, 255).Value);
-				ImGui::PushStyleColor(ImGuiCol_Text, ImColor(255, 255, 255, 255).Value);
+				ImGui::PushStyleColor(ImGuiCol_Text, ImColor(0, 0, 0, 255).Value);
 
-				const char* lbl = XorStr("LOGIN");
-				if (s_Checking)
+				if (ImGui::Button("INJETAR", ImVec2(btnW, 0.f)))
 				{
-					static const char* dots[] = {
-						"Checking   ", "Checking.  ", "Checking.. ", "Checking..."
-					};
-					lbl = dots[(int)(s_DotTimer * 3.f) % 4];
+					g_Options.General.IsLoggedIn = true;
 				}
-
-				bool clicked = false;
-				if (s_Checking)
-				{
-					ImGui::BeginDisabled();
-					ImGui::Button(lbl, ImVec2(iW, 0.f));
-					ImGui::EndDisabled();
-				}
-				else clicked = ImGui::Button(lbl, ImVec2(iW, 0.f));
 
 				ImGui::PopStyleColor(4);
 				ImGui::PopStyleVar(2);
-
-				if ((clicked || enter) && !s_Checking && s_Key[0] != '\0')
-				{
-					s_Checking = true;
-					s_Wrong = false;
-					s_DotTimer = 0.f;
-
-					std::string keyCopy(s_Key);
-					std::thread([keyCopy]()
-						{
-							bool ok = ::Security::Authenticate(keyCopy);
-							if (ok)
-							{
-								g_Options.General.IsLoggedIn = true;
-								g_Options.General.DaysLeft = ::Security::CurrentLicense.daysLeft;
-								g_Options.General.UserName = ::Security::CurrentLicense.username;
-								SaveLicenseKey(keyCopy);
-							}
-							g_AuthCheckResult = ok;
-							g_AuthCheckDone = true;
-							g_AutoAuthAttempted = true;
-						}).detach();
-				}
-
-				if (g_AuthCheckDone.load())
-				{
-					g_AuthCheckDone = false;
-					s_Checking = false;
-					if (!g_AuthCheckResult.load())
-					{
-						s_Wrong = true;
-						s_ShakeTimer = 0.35f;
-					}
-				}
+				ImGui::PopFont();
 			}
 			ImGui::End();
 			return;
@@ -1887,26 +1581,12 @@ namespace FrameWork
 							}
 
 							{
-								ImGui::TextDisabled(_T("Account Information"));
+								ImGui::TextDisabled(_T("Account"));
 								ImGui::Text("User: %s", s_DiscordName.c_str());
-								ImGui::Text("Key: %s", ::Security::CurrentLicense.key.c_str());
-								if (g_Options.General.DaysLeft == -1)
-									ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), _T("LIFETIME"));
-								else if (g_Options.General.DaysLeft > 0)
-									ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), _T("Days Left: %d"), g_Options.General.DaysLeft);
-								else if (g_Options.General.DaysLeft == 0)
-									ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), _T("EXPIRED"));
-								ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
-								ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.25f, 0.25f, 0.25f, 1.0f));
-								if (ImGui::Button(_T("Logout")))
+								if (ImGui::Button("Logout"))
 								{
-									DeleteLicenseKey();
 									g_Options.General.IsLoggedIn = false;
-									g_Options.General.UserName.clear();
-									g_Options.General.DaysLeft = 0;
-									g_AutoAuthAttempted = false;
 								}
-								ImGui::PopStyleColor(2);
 							}
 
 							ImGui::SeparatorText(_T("Configs"));

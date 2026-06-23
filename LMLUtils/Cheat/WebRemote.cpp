@@ -12,7 +12,6 @@
 
 #include "WebRemote.hpp"
 #include <Cheat/Options.hpp>
-#include <Security/KeyAuth.hpp>
 #include <FrameWork/Dependencies/NlohmannJson.hpp>
 #include <sstream>
 #include <vector>
@@ -354,7 +353,7 @@ R"HTML(
         if (m_Running) return;
         m_Running = true;
 
-        std::string name = Security::CurrentLicense.username;
+        std::string name = "User";
         if (name.empty())
             m_Token = "access";
         else
